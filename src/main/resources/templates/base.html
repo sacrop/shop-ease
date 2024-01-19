@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[[${pageTitle}]] | EasyShop</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Source+Code+Pro:700,900&display=swap"
+        rel="stylesheet">
+    <!-- CSS Libraries -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet"  th:href="@{/css/style.css}">
+    <link rel="stylesheet"  th:href="@{/lib/slick/slick.css}">
+    <link rel="stylesheet"  th:href="@{/lib/slick/slick-theme.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="lib/slick/slick.css" rel="stylesheet">
+    <link href="lib/slick/slick-theme.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Nav Bar Start -->
+    <div class="nav">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+                <a href="#" class="navbar-brand">MENU</a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                
+                    <th:block th:if="${user==NULL}">
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                    <div class="navbar-nav mr-auto">
+                        <a href="#" th:href="@{/}" class="nav-item nav-link active">Home</a>
+                        <a href="#" th:href="@{/productlist}" class="nav-item nav-link">Products</a>
+                        
+                        <div class="nav-item dropdown">
+                            <!-- <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">More Pages</a> -->
+                            <div class="dropdown-menu">
+                                <!-- <a href="#" class="dropdown-item">Wishlist</a> -->
+                                <!-- <a href="#" class="dropdown-item">Login & Register</a> -->
+                                <!-- <a href="#" class="dropdown-item">Contact Us</a> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navbar-nav ml-auto">
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown">Account<i
+                                    class="fa fa-user pl-3" aria-hidden="true"></i></a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left">
+                                <a href="" th:href="@{/signin}" class="dropdown-item">Login</a>
+                                <a href="" th:href="@{/register}" class="dropdown-item">Register</a>
+                            </div>
+                        </div>
+                    </div>
+                    </th:block>
+                    <th:block th:if="${user!=NULL}">
+                        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                            <div class="navbar-nav mr-auto">
+                                <a href="#" th:href="@{/user/}" class="nav-item nav-link active">Home</a>
+                                <a href="#" th:href="@{/user/productlist}" class="nav-item nav-link">Products</a>
+                                <!-- <a href="#" th:href="@{/user/productlist}" class="nav-item nav-link">Product Detail</a> -->
+                                <a href="#" th:href="@{/user/cartItems}" class="nav-item nav-link">Cart</a>
+                                
+                                <a href="#" th:href="@{/user/userprofile}" class="nav-item nav-link">My Account</a>
+                                <div class="nav-item dropdown">
+                                    <!-- <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">More Pages</a> -->
+                                    <div class="dropdown-menu">
+                                        <!-- <a href="#" th:href="@{/user/wishlist}" class="dropdown-item">Wishlist</a> -->
+                                        <!-- <a href="#" class="dropdown-item">Login & Register</a> -->
+                                        <!-- <a href="#" class="dropdown-item">Contact Us</a> -->
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="navbar-nav ml-auto">
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown">[[${user.usename}]]<i
+                                        class="fa fa-user pl-3" aria-hidden="true"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left">
+                                    <a href="" th:href="@{/user/userprofile}" class="dropdown-item">settings</a>
+                                    <a href="" th:href="@{/logout}" class="dropdown-item">logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                    
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Nav Bar End -->
+   
+   
+
+    <div th:replace="${content}"></div>
+
+    <!-- Footer Start -->
+    <div class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget">
+                        <h2>Get in Touch</h2>
+                        <div class="contact-info">
+                            <p><i class="fa fa-map-marker"></i>easy shop, Los Angeles, USA</p>
+                            <p><i class="fa fa-envelope"></i>email@easyshop.com</p>
+                            <p><i class="fa fa-phone"></i>+123-456-7890</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget">
+                        <h2>Follow Us</h2>
+                        <div class="contact-info">
+                            <div class="social">
+                                <a href=""><i class="fab fa-twitter"></i></a>
+                                <a href=""><i class="fab fa-facebook-f"></i></a>
+                                <a href=""><i class="fab fa-linkedin-in"></i></a>
+                                <a href=""><i class="fab fa-instagram"></i></a>
+                                <a href=""><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget">
+                        <h2>Company Info</h2>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms & Condition</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-widget">
+                        <h2>Purchase Info</h2>
+                        <ul>
+                            <li><a href="#">Pyament Policy</a></li>
+                            <li><a href="#">Shipping Policy</a></li>
+                            <li><a href="#">Return Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row payment align-items-center">
+                <div class="col-md-6">
+                    <div class="payment-method">
+                        <h2>We Accept:</h2>
+                        <img src="" th:src="@{/img/payment-method.png}" alt="Payment Method" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="payment-security">
+                        <h2>Secured By:</h2>
+                        <img src="" th:src="@{/img/godaddy.svg}" alt="Payment Security" />
+                        <img src="" th:src="@{/img/norton.svg}" alt="Payment Security" />
+                        <img src="" th:src="@{/img/ssl.svg}" alt="Payment Security" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <!-- JavaScript Libraries -->
+    <script  src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script  src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="" th:src="@{/lib/slick/slick.min.js}"></script>
+    <script src="" th:src="@{/lib/easing/easing.min.js}"></script>
+    <script src="" th:src="@{/js/main.js}"></script>
+</body>
+
+</html>

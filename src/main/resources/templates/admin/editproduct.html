@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit product page</title>
+</head>
+
+<body>
+
+    <section>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card " style="width: 100vw;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Product List</h4>
+                            <div class="ms-4"><a th:href="@{/admin/restoredeletedproducts}"><i
+                                        class="fa-solid fa-trash-can-arrow-up"></i>restore</a></div>
+                            <div class="table-responsive">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">product price</th>
+                                            <th scope="col">Image</th>
+                                            <th scope="col">Category id</th>
+                                            <th scope="col">Subcategory id</th>
+                                            <th class="text-center" colspan="2" scope="col">actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody th:each="products:${product}">
+                                        <tr>
+                                            <td th:text="${products.id}"></td>
+                                            <td style="padding: 1.93rem; white-space:pre-line;"
+                                                th:text="${products.pname}"></td>
+                                            <td style="padding: 1.93rem; white-space:pre-line;"
+                                                th:text="${products.pdescription}"></td>
+                                            <td th:text="${products.price}"></td>
+                                            <td>
+                                                <div class="image-container"
+                                                    style="display: flex; flex-direction: column; align-items: center;">
+                                                    <th:block th:each="imagepath, iterStat : ${products.imagepath}">
+                                                        <img th:src="@{'/img/' + ${imagepath}}"
+                                                            style="height: 6rem; width: 6rem; padding: 1rem; display: '${iterStat.index == 0 ? 'block' : 'none'};' "
+                                                            alt="img">
+                                                    </th:block>
+                                                </div>
+                                            </td>
+                                            <!-- <td th:text="${products.category.catname}"></td>
+                                            <td th:text="${products.subcategory.subcatname}"></td> -->
+                                            <td th:if="${products.category != null}"
+                                                th:text="${products.category.catname}"></td>
+                                                <td th:if="${products.category == null}"></td>
+                                            <td th:if="${products.subcategory == null}"></td>
+                                            <td th:if="${products.subcategory != null}"
+                                                th:text="${products.subcategory.subcatname}"></td>
+
+                                            <td>
+                                                <form action="" th:action="@{/admin/deleteproduct}" method="get">
+                                                    <input type="hidden" name="productId" th:value="${products.id}">
+                                                    <button type="submit" class="btn btn-dark"
+                                                        style="border-radius: 30px;"><i class="fa-solid fa-trash fa-2xl"></i></button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="" th:action="@{/admin/updatedproduct}" method="get">
+                                                    <input type="hidden" name="productId" th:value="${products.id}">
+                                                    <button type="submit" class="btn btn-dark"
+                                                        style="border-radius: 30px;">update</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        
+
+        <script th:inline="javascript">
+            // javascript code to change the image automatically
+            var imageContainers = document.querySelectorAll('.image-container');
+
+            imageContainers.forEach(function (container) {
+                var images = container.querySelectorAll('img');
+                var currentIndex = 0;
+
+                function showImage(index) {
+                    images.forEach(function (img, i) {
+                        img.style.display = i === index ? 'block' : 'none';
+                    });
+                }
+
+                function nextImage() {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    showImage(currentIndex);
+                }
+
+                // Change image every 3 seconds (adjust the duration as needed)
+                setInterval(nextImage, 3000);
+            });
+        </script>
+
+    </section>
+
+</body>
+
+</html>

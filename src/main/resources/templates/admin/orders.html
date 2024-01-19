@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit product page</title>
+</head>
+
+<body>
+
+    <section>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card " style="width: 100vw;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Order List</h4>
+                            <div class="table-responsive">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">orderID</th>
+                                            <th scope="col">Order price</th>
+                                            <th scope="col">product Name</th>
+                                            <th scope="col">User Name</th>
+                                            <th scope="col">Status</th>
+                                            
+                                            <th class="text-center" colspan="2" scope="col">actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="order,stat:${orders}">
+                                            <form th:action="@{/admin/changeorderStatus}" method="post">
+                                            <td th:text="${stat.index+1}"></td>
+                                            <td th:text="${order.id}"></td>
+                                            <td th:text="${order.totalAmount}"></td>
+                                            <td>
+                                                <ul>
+                                                    <li th:each="orderItem : ${orderitems}" th:if="${order.id == orderItem.order.id}">
+                                                        <span th:text="${orderItem.product.pname}"></span>
+                                                        
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            
+                                            <td th:text="${order.user.usename}"></td>
+                                            <td th:text="${order.status}"></td>
+                                            <td>
+                                                <select id="status" name="status" required>
+                                                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option>
+                                                </select>
+                                            </td>
+                                            <input type="hidden" th:value="${order.id}" name="orderId">
+                                            <td><button type="submit" class="btn btn-dark rounded" >Update Status</i></button></td>
+                                          
+                                            </form>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        
+
+    </section>
+
+</body>
+
+</html>

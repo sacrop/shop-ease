@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit product page</title>
+</head>
+
+<body>
+
+    <section>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card " style="width: 100vw;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Product List</h4>
+                            <div class="table-responsive">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Name</th>
+                                            <!-- <th scope="col">product price</th> -->
+                                            <th scope="col">Image</th>
+                                            <!-- <th scope="col">Category id</th>
+                                            <th scope="col">Subcategory id</th> -->
+                                            <th scope="col">Stock quantity</th>
+                                            <th class="text-center" colspan="3" scope="col">actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody th:each="products , iStat : ${product}">
+                                        <tr>
+                                            <td th:text="${iStat.index + 1}"></td>
+                                            <td th:text="${products.id}"></td>
+                                            <td style="padding: 1.93rem; white-space:pre-line;"
+                                                th:text="${products.pname}"></td>
+
+                                            <!-- <td th:text="${products.price}"></td> -->
+                                            <td>
+                                                <div class="image-container"
+                                                    style="display: flex; flex-direction: column; align-items: center;">
+                                                    <img th:src="@{'/img/' + ${products.imagepath[0]}}"
+                                                        style="height: 6rem; width: 6rem; padding: 1rem; display: '${iterStat.index == 0 ? 'block' : 'none'};' "
+                                                        alt="img">
+                                                </div>
+                                            </td>
+                                            <!-- <td th:text="${products.category.catname}"></td>
+                                            <td th:text="${products.subcategory.subcatname}"></td> -->
+                                            <td>
+                                                <div th:if="${products.stockQuantity > 100}"
+                                                    class="text-success fw-bolder">In Stock</div>
+                                                <div th:if="${products.stockQuantity > 10 and products.stockQuantity<=100 }" class="text-warning">Maintain Stock</div>
+                                                <div th:if="${products.stockQuantity < 11}" class="text-danger">Out Of
+                                                    Stock</div>
+                                            </td>
+                                            <td>
+
+                                                <form id="form4" method="post" action="">
+                                                    <div class="p-2">
+                                                        <input type="number" id="stock" name="newqty" class="m-2" />
+                                                    <button type="submit"
+                                                        th:formaction="@{/admin/stockmanagement/set/{id}(id=${products.id})}"
+                                                        class="btn btn-success  text-white">ADD</button>
+                                                    <button type="submit"
+                                                        th:formaction="@{/admin/stockmanagement/add/{id}(id=${products.id})}"
+                                                        class="btn btn-primary  text-white">SET</button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        
+
+    </section>
+
+</body>
+
+</html>

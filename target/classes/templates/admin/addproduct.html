@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product</title>
+</head>
+
+<body>
+    <section>
+        <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
+        <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card" style="width: 100%;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Add Product</h4>
+
+                            <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                role="alert">
+                                <p class="text-center" th:text="${session.message.content}"></p>
+                            </div>
+                            <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                            <form action="" th:action="@{/admin/creatproduct}" method="post"
+                                enctype="multipart/form-data">
+
+                                <div class="form-group">
+                                    <label for="productname">Product Name</label>
+                                    <input type="text" class="form-control border border-dark " id="productname"
+                                        name="productname" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">Product Description</label>
+                                    <textarea class="form-control border border-dark" id="exampleFormControlTextarea1"
+                                        rows="3" name="productdescription" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">Product Specification</label>
+                                    <textarea class="form-control border border-dark" id="exampleFormControlTextarea2"
+                                        rows="3" name="productSpecification" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prodprice">Product Price</label>
+                                    <input type="text" class="form-control border border-dark " id="prodprice"
+                                        oninput="validateDouble(this)" name="price" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category Name</label>
+                                    <select id="category" name="procat" class="form-select"
+                                        aria-label="Default select example" onchange="fetchSubcategories()">
+                                        <option value="0" selected>select Category</option>
+                                        <option th:each="category : ${category}" th:value="${category.catid}"
+                                            th:text="${category.catname}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subcategory">Subcategory Name</label>
+                                    <select id="subcategory" name="prosubcat" class="form-select"
+                                        aria-label="Default select example">
+                                        <option value="0" selected>select Subcategory</option>
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="mb-3">
+                                        <label for="formFile" class="form-label">Upload image</label>
+                                        <input class="form-control" type="file" id="formFile" multiple="multiple"
+                                            name="imagefile">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="croppedImage" class="form-label">Cropped Image</label>
+                                    <img id="croppedImage" class="img-fluid" alt="Cropped Image">
+                                </div>
+
+                                <button type="button" class="btn btn-primary" onclick="cropImage()">Crop Image</button>
+
+
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+        <script>
+            function validateDouble(input) {
+                // Replace non-numeric characters with an empty string
+                input.value = input.value.replace(/[^0-9.]/g, '');
+
+                // Ensure there's only one dot (decimal point)
+                if (input.value.split('.').length > 2) {
+                    input.value = input.value.substring(0, input.value.lastIndexOf('.'));
+                }
+            }
+
+            function fetchSubcategories() {
+                const categoryId = document.getElementById('category').value;
+                const apiUrl = `https://shopease.xyz/admin/getsubcategories/${categoryId}`;
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Received JSON data:", data);
+
+                        const subcategorySelect = document.getElementById('subcategory');
+                        subcategorySelect.innerHTML = ''; // Clear existing options
+
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = 0;
+                        defaultOption.text = "select subcategory";
+                        subcategorySelect.appendChild(defaultOption);
+
+                        data.forEach(subcategory => {
+                            console.log("Subcategory:", subcategory.subcatname);
+
+                            const option = document.createElement('option');
+                            option.value = subcategory.id;
+                            option.text = subcategory.subcatname;
+                            subcategorySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => alert(error + "failed"));
+
+                return false;
+            }
+
+            document.getElementById('formFile').addEventListener('change', function (event) {
+                var input = event.target;
+                var reader = new FileReader();
+
+                reader.onload = function () {
+                    var img = document.getElementById('croppedImage');
+                    img.src = reader.result;
+
+                    // Initialize Cropper.js
+                    var cropper = new Cropper(img, {
+                        aspectRatio: 16 / 9, // Set your desired aspect ratio
+                        viewMode: 2, // Set your desired view mode
+                    });
+
+                    // Save the cropper instance for later use
+                    input.cropper = cropper;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            });
+
+            function cropImage() {
+                var input = document.getElementById('formFile');
+                if (input.cropper) {
+                    // Get the cropped data as a base64-encoded string
+                    var croppedData = input.cropper.getCroppedCanvas().toDataURL();
+
+                    // You can send the croppedData to the server using AJAX or include it in a form submission
+                    // For example, you can set the src attribute of a hidden input field
+                    document.getElementById('croppedImageData').value = croppedData;
+
+                    // Optionally, you can display the cropped image on the page
+                    document.getElementById('croppedImage').src = croppedData;
+                } else {
+                    alert('Please select an image and initialize the cropper.');
+                }
+            }
+        </script>
+
+
+
+
+        </script>
+    </section>
+</body>
+
+</html>

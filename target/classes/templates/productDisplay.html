@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index page</title>
+</head>
+
+<body>
+    <section>
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Bar End -->
+
+
+        <!-- Product List Start -->
+        <div class="product-view">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="product-view-top">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="product-search">
+                                                <th:block th:if="${user==NULL}">
+                                                    <form th:action="@{/searchProduct}">
+                                                        <input type="text" name="searchQuery">
+                                                        <button type="submit"><i class="fa fa-search"></i></button>
+
+                                                        <a class="btn btn-outline-warning my-2"
+                                                            th:href="@{/productlist}"><i
+                                                                class="fa-solid fa-broom"></i></a>
+                                                    </form>
+                                                </th:block>
+                                                <th:block th:if="${user!=NULL}">
+                                                    <form th:action="@{/user/searchProduct}">
+                                                        <input type="text" name="searchQuery">
+                                                        <button type="submit"><i class="fa fa-search"></i></button>
+
+                                                        <a class="btn btn-outline-warning my-2"
+                                                            th:href="@{/user/productlist}"><i
+                                                                class="fa-solid fa-broom"></i></a>
+                                                    </form>
+                                                </th:block>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="product-short">
+                                                <div class="dropdown">
+                                                    <div class="dropdown-toggle" data-toggle="dropdown">Sort by category
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <div th:each="category : ${Categories}">
+                                                            <th:block th:if="${user!=NULL}" >
+                                                                <a href="#"
+                                                                th:href="@{/user/productlist/{id}(id=${category.catid})}"
+                                                                class="dropdown-item">[[${category.catname}]]</a>
+                                                            </th:block>
+                                                            <th:block th:if="${user==NULL}" >
+                                                                <a href="#"
+                                                                th:href="@{/productlist/{id}(id=${category.catid})}"
+                                                                class="dropdown-item">[[${category.catname}]]</a>
+                                                            </th:block>
+                                                            
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="product-price-range">
+                                                <!-- <div class="dropdown">
+                                                    <div class="dropdown-toggle" data-toggle="dropdown">Product price
+                                                        range</div>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a href="#" class="dropdown-item">$0 to $50</a>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4" th:each="products:${product}">
+                                <div class="product-item">
+                                    <div class="product-title">
+                                        <a href=""
+                                            th:href="@{/user/productdescription/{productId}(productId=${products.id})}">[[${products.pname}]]</a>
+                                        <div class="ratting">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="product-image">
+                                        <a href=""
+                                            th:href="@{/user/productdescription/{productId}(productId=${products.id})}">
+                                            <img class="imp" src="" th:src="@{'/img/'+${products.imagepath[0]}}"
+                                                alt="Product Image">
+                                        </a>
+                                        <div class="product-action">
+                                            <a href="#"><i class="fa fa-cart-plus"></i></a>
+                                            <a href="#"><i class="fa fa-heart"></i></a>
+                                            <a href="#"
+                                                th:href="@{/user/productdescription/{productId}(productId=${products.id})}"><i
+                                                    class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">
+                                        <h3><span>₹</span>[[${products.price}]]</h3>
+                                        <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Pagination Start -->
+                        
+                        <div class="col-md-12">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center" >
+                                    <li th:class="${product.number == 0} ? 'page-item disabled' : 'page-item'">
+                                        <a class="page-link" th:href="@{/productlist(page=0, size=${size})}"
+                                            tabindex="-1">Previous</a>
+                                    </li>
+                                    <li  th:each="pageNumber : ${#numbers.sequence(0, product.totalPages - 1)}"
+                                        th:class="${product.number == pageNumber} ? 'page-item active' : 'page-item'"><a
+                                            class="page-link"
+                                            th:href="@{/productlist(page=${pageNumber}, size=${size})}"
+                                            th:text="${pageNumber + 1}"></a></li>
+
+                                    <li 
+                                        th:class="${product.number == product.totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                                        <a class="page-link"
+                                            th:href="@{/productlist(page=${product.totalPages - 1}, size=${size})}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- Pagination Start -->
+
+                    </div>
+
+                    <!-- Side Bar Start -->
+                    <div class="col-lg-4 sidebar">
+                        <div class="sidebar-widget category">
+                            <h2 class="title">Category</h2>
+                            <nav class="navbar bg-light">
+                                <ul class="navbar-nav">
+                                    <th:block th:if="${user!=null}">
+                                        <li class="nav-item" th:each="cat:${Categories}">
+                                            <a class="nav-link" th:href="@{/user/productlist/{id}(id=${cat.catid})}"><i th:classappend="${cat.iconClass}" class=""></i>[[${cat.catname}]]</a>
+                                        </li>
+                                    </th:block>
+                                    <th:block th:if="${user==null}">
+                                        <li class="nav-item" th:each="cat:${Categories}">
+                                            <a class="nav-link" th:href="@{/productlist/{id}(id=${cat.catid})}"><i th:classappend="${cat.iconClass}" class=""></i>[[${cat.catname}]]</a>
+                                        </li>
+                                    </th:block>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        <div class="sidebar-widget widget-slider">
+                            <div class="sidebar-slider normal-slider">
+                                <div class="product-item" th:each="products:${product}">
+                                    <div class="product-title">
+                                        <a href=""
+                                            th:href="@{/user/productdescription/{productId}(productId=${products.id})}">[[${products.pname}]]</a>
+                                        <div class="ratting">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="product-image">
+                                        <a href=""
+                                            th:href="@{/user/productdescription/{productId}(productId=${products.id})}">
+                                            <img class="imp" src="" th:src="@{'/img/'+${products.imagepath[0]}}"
+                                                alt="Product Image">
+                                        </a>
+                                        <div class="product-action">
+                                            <a href="#"><i class="fa fa-cart-plus"></i></a>
+                                            <a href="#"><i class="fa fa-heart"></i></a>
+                                            <a href="#"
+                                                th:href="@{/user/productdescription/{productId}(productId=${products.id})}"><i
+                                                    class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="product-price">
+                                        <h3><span>₹</span>[[${products.price}]]</h3>
+                                        <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-widget brands">
+
+                        </div>
+
+                        <div class="sidebar-widget tag">
+
+                        </div>
+                    </div>
+                    <!-- Side Bar End -->
+                </div>
+            </div>
+        </div>
+        <!-- Product List End -->
+
+
+    </section>
+
+</body>
+
+</html>

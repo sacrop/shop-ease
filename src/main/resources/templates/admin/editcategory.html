@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>edit Category</title>
+</head>
+<body>
+    <section>
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card" style="width: 100vw;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                            <h4 class="card-title">Edit Category</h4>
+                            <div class="ms-4"><a th:href="@{/admin/restoredeleted}" ><i class="fa-solid fa-trash-can-arrow-up"></i></a></div> 
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th> ID</th>
+                                            <th> Category </th>
+                                            <th> Subcategory </th>
+                                            <th class="text-center" scope="col">actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="category:${categories}">
+                                            <td>[[${category.catid}]]</td>
+                                            <td>[[${category.catname}]]</td>
+                                            <td>
+                                                <p th:each="subcat:${category.subcategory}">[[${subcat.subcatname}]]</p>
+                                            </td>
+                                            <td class="d-flex flex-row justify-content-evenly">
+                                                <form action="" th:action="@{/admin/deleteCategory}" method="post">
+                                                    <input type="hidden" name="catid" th:value="${category.catid}">
+                                                    <button type="submit" class="btn btn-dark"
+                                                        style="border-radius: 30px;">delete</button>
+                                                </form>
+                                                <form  method="get" th:action="@{/admin/updateCategory}">
+                                                    <input type="hidden" name="catid" th:value="${category.catid}"> 
+                                                    <button type="submit" class="btn btn-dark"
+                                                        style="border-radius: 30px;">update</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+</body>
+
+</html>

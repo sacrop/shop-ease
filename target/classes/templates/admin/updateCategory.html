@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category</title>
+</head>
+
+<body>
+    <section>
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Add category</h4>
+                            <div class="table-responsive rounded">
+                                <form th:action="@{/admin/updatedCategories}" method="post" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label for="categoryname">Category Name</label>
+                                        <input type="text" class="form-control border border-dark" id="categoryname" name="catname"
+                                               th:value="${category.catname}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoryname">Icon class</label>
+                                        <input type="text" class="form-control border border-dark " id="iconClass"
+                                            name="iconClass" th:value="${category.iconClass}" >
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">Upload image</label>
+                                            <input class="form-control" type="file" id="formFile" 
+                                                name="imagefile">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="catid" th:value="${category.catid}">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+
+
+    </section>
+
+</body>
+
+</html>

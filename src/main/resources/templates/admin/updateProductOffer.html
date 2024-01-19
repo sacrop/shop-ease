@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product</title>
+</head>
+
+<body>
+    <section>
+
+        <div class="row">
+            <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Add Product Offer</h4>
+                        <div class="table-responsive">
+                            <form id="offerForm2" th:action="@{/admin/updateProductOffer}" method="post">
+
+                                <div class="form-group">
+                                    <label for="discount">Discount (%)</label>
+                                    <input type="number" class="form-control" placeholder="Enter discount"
+                                        name="discount" th:value="${offers.discountOffer}" required>
+                                </div>
+                                <input type="hidden" name="productId" th:value="${offers.product.id}">
+                                <div class="form-group">
+                                    <label for="product">Product name : [[${offers.product.pname}]]</label>              
+                                </div>
+                                <div class="form-group">
+                                    <label for="offerdescription">Description</label>
+                                    <textarea class="form-control border border-dark" id="exampleFormControlTextarea1"
+                                        rows="3" name="offerdescription" th:value="${offers.offerDescription}" required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">submit</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('OfferForm');
+
+                form.addEventListener('submit', function (event) {
+                    // Validate code
+
+
+                    // Validate discountPercentage
+                    var discountInput = form.querySelector('[name="discount"]');
+                    var discountValue = parseFloat(discountInput.value);
+                    if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+                        alert('Enter a valid discount percentage between 0 and 100.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+
+
+                    // If all validations pass, the form will be submitted
+                    return true;
+                });
+            });
+
+
+        </script>
+    </section>
+</body>
+
+</html>

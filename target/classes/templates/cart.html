@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index page</title>
+</head>
+
+<body>
+    <section>
+        
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Bar End -->
+
+        <!-- Cart Start -->
+        <div class="cart-page">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="cart-page-inner">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="align-middle">
+                                        <tr th:each="cartitem:${cartitems}">
+                                            <form method="post">
+                                                <td>
+                                                    <div class="img">
+                                                        <a
+                                                            th:href="@{/user/productdescription/{id}(id=${cartitem.product.id})}"><img
+                                                                th:src="@{'/img/'+${cartitem.product.imagepath[0]}}"
+                                                                alt="Image"></a>
+                                                        <p>[[${cartitem.product.pname}]]</p>
+                                                        <p>[[${cartitem.product.id}]]</p>
+                                                    </div>
+                                                </td>
+                                                <input type="hidden" name="cartId" th:value="${cartitem.id}">
+                                                <td id="productprice" th:value="${cartitem.product.price}"><span>₹
+                                                    </span>[[${cartitem.product.price}]]</td>
+                                                <td>
+                                                    <div class="qty">
+                                                        <button type="submit" th:formaction="@{/user/updatecart}"
+                                                            class="btn-minus"><i class="fa fa-minus"></i></button>
+                                                        <input id="opo" type="text" value="1" name="quantities" min="1"
+                                                            max="5" th:value="${cartitem.quantity}">
+                                                        <button type="submit" th:formaction="@{/user/updatecart}"
+                                                            class="btn-plus"><i class="fa fa-plus"></i></button>
+                                                    </div>
+                                                </td>
+                                                <td><button type="submit" th:formaction="@{/user/deletecart}"><i
+                                                            class="fa fa-trash"></i></button></td>
+
+                                            </form>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <h3 class="alert alert-danger text-center" th:if="${#lists.isEmpty(cartitems)}">Cart is
+                                    empty</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="cart-page-inner">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <form method="post">
+                                        <div class="cart-summary">
+                                            <div class="cart-content">
+                                                <h1>Cart Summary</h1>
+
+                                                <h2>Grand Total <span
+                                                        id="grandTotal">[[${totalamount}]]</span></h2>
+                                            </div>
+                                            <div class="cart-btn">
+
+
+                                                <button style="width: 100%;" type="submit"
+                                                    th:formaction="@{/user/checkoutall}"
+                                                    th:disabled="${#lists.isEmpty(cartitems)}">Checkout</button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <!-- Cart End -->
+        <script>
+            
+
+            $(document).ready(function () {
+                var priceText = document.getElementById('productprice').textContent;
+
+                // Use regular expression to extract the numeric part of the string
+                var priceValue = parseFloat(priceText.match(/\d+\.\d+/)[0]);
+                var quantity = document.getElementById('opo').textContent;
+            });
+
+           
+
+
+
+        </script>
+
+
+    </section>
+
+</body>
+
+</html>

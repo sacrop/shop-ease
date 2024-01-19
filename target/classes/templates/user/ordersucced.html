@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+        <!-- breadcrumb -->
+        <!-- <div>
+            <div class="breadcrumb-wrap">
+                <div class="container-fluid">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+        <!-- Breadcrumb Start -->
+        <div class="breadcrumb-wrap">
+            <div class="container-fluid">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Products</a></li>
+                    <li class="breadcrumb-item active">My Account</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- My Account Start -->
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-md-9">
+                        <div class="tab-content ">
+                            <div class="d-flex-row m-3 justify-content p-5 align-items-center">
+                                <h1>order is placed successfully</h1>
+                                <a class="btn m-4" th:href="@{/user/orders}">track order</a>
+                                <a class="btn m-4" th:href="@{/user/}">continue shopping</a>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+
+
+    </section>
+
+</body>
+
+</html>

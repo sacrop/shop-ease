@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+
+        <!-- My Account Start -->
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                            <!-- <a class="nav-link active" id="dashboard-nav" data-toggle="pill" href="#dashboard-tab"
+                                role="tab"><i class="fa fa-tachometer-alt"></i>Dashboard</a> -->
+                            <a class="nav-link" id="account-nav" href="#" th:href="@{/user/userprofile}"><i
+                                    class="fa fa-user"></i>Account Details</a>
+                            <a class="nav-link" id="orders-nav" data-toggle="pill" href="#orders-tab" role="tab"><i
+                                    class="fa fa-shopping-bag"></i>Orders</a>
+                            <a class="nav-link" id="payment-nav" href="" th:href="@{/user/wallet}"><i
+                                    class="fa fa-credit-card"></i>Wallet</a>
+                            <a class="nav-link" id="wallet" th:href="@{/user/referEarn}"><i
+                                    class="fa-solid fa-handshake"></i>Refer & Earn</a>
+                            <a class="nav-link" id="address-nav" href="" th:href="@{/user/address}"><i
+                                    class="fa fa-map-marker-alt"></i>address</a>
+
+                            <a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active " id="orders-tab" role="tabpanel"
+                                aria-labelledby="orders-nav">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Product</th>
+                                                <th>Date</th>
+                                                <th>Price</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="order,status:${orders}">
+                                                <td th:text="${status.index+1}">1</td>
+                                                <td>
+                                                    <ul>
+                                                        <li th:each="orderItem : ${orderitems}"
+                                                            th:if="${order.id == orderItem.order.id}">
+                                                            <span th:text="${orderItem.product.pname}"></span>
+                                                            <!-- Add more details as needed -->
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <script th:inline="javascript">
+                                                        /* Extracting the date string from Thymeleaf expression */
+                                                        var orderDateTime = /*[[${order.orderDateTime}]]*/ '';
+
+                                                        /* Creating a JavaScript Date object from the string */
+                                                        var date = new Date(orderDateTime);
+
+                                                        /* Formatting the date to display only the date part */
+                                                        var formattedDate = date.toLocaleDateString();
+
+                                                        /* Setting the formatted date as the text content of the <td> element */
+                                                        document.write(formattedDate);
+                                                    </script>
+                                                </td>
+
+                                                <td th:text="${order.totalAmount}">$99</td>
+                                                <td th:if="${order.status}!=${orderstatuses[4]}" class="text-success" th:text="${order.status}"></td>
+                                                <td th:if="${order.status}==${orderstatuses[4]}" class="text-danger" th:text="${order.status}"></td>
+                                                <td th:if="${order.status}==${orderstatuses[0]}">
+                                                    <a class="btn"
+                                                        th:href="@{/user/cancelOrder/{id}(id=${order.id})}">Cancel
+                                                        Order</a>
+                                                </td>
+                                                <td th:if="${order.status}==${orderstatuses[3]}">
+                                                    <a class="btn"
+                                                        th:href="@{/user/cancelOrder/{id}(id=${order.id})}">Return</a>
+                                                </td>
+
+                                                <td th:if="${order.status}==${orderstatuses[1]}">
+                                                    <!-- <button class="btn" href="" disabled  th:href="@{/user/cancelOrder/{id}(id=${order.id})}">Cancel Order</button> -->
+                                                </td>
+                                                <td th:if="${order.status}==${orderstatuses[2]}">
+                                                    <!-- <button class="btn" href="" disabled  th:href="@{/user/cancelOrder/{id}(id=${order.id})}">Cancel Order</button> -->
+                                                </td>
+                                                <td th:if="${order.status}==${orderstatuses[4]}">
+                                                    <!-- <button class="btn" href="" disabled  th:href="@{/user/cancelOrder/{id}(id=${order.id})}">Cancel Order</button> -->
+                                                </td>
+                                                <td th:if="${order.status}==${orderstatuses[5]}">
+                                                    <!-- <button class="btn" href="" disabled  th:href="@{/user/cancelOrder/{id}(id=${order.id})}">Cancel Order</button> -->
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+
+
+    </section>
+
+</body>
+
+</html>

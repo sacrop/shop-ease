@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register page</title>
+
+</head>
+
+<body>
+   
+    <section>
+        <div class="container p-3">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="my-card mt-5 rounded otplayout text-dark">
+
+                        <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                            role="alert">
+                            <p class="text-center" th:text="${session.message.content}"></p>
+                        </div>
+                        <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                        <div class="otptitle">OTP</div>
+                        <img class="otpimage" src="" th:src="@{/img/otp.jpg}" alt="otpimage">
+                        <div class="title">Verification Code</div>
+                        <p>We have sent a verification code to your mobile number</p>
+                        <form id="formotp" action="" th:action="@{/otpverify}" method="post" onsubmit="submitForm()">
+                            <div id='inputs'>
+                                <input class="otpinput" id='input1' type='text' maxLength="1"
+                                    onkeydown="alertform(event)" oninput="noveto(this)" />
+                                <input class="otpinput" id='input2' type='text' maxLength="1"
+                                    onkeydown="alertform(event)" oninput="noveto(this)" />
+                                <input class="otpinput" id='input3' type='text' maxLength="1"
+                                    onkeydown="alertform(event)" oninput="noveto(this)" />
+                                <input class="otpinput" id='input4' type='text' maxLength="1"
+                                    onkeydown="alertform(event)" oninput="noveto(this)" />
+                            </div>
+                            <button class="otpbutton" type="submit">Submit</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

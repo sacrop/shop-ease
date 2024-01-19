@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+        <!-- breadcrumb -->
+        <!-- <div>
+            <div class="breadcrumb-wrap">
+                <div class="container-fluid">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+        <!-- Breadcrumb Start -->
+        <div class="breadcrumb-wrap">
+            <div class="container-fluid">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Products</a></li>
+                    <li class="breadcrumb-item active">My Account</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- My Account Start -->
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                            <!-- <a class="nav-link active" id="dashboard-nav" data-toggle="pill" href="#dashboard-tab"
+                                role="tab"><i class="fa fa-tachometer-alt"></i>Dashboard</a> -->
+                            <a class="nav-link" id="account-nav" href="" th:href="@{/user/userprofile}"><i
+                                    class="fa fa-user"></i>Account Details</a>
+                            <a class="nav-link" id="orders-nav" href="" th:href="@{/user/orders}"><i
+                                    class="fa fa-shopping-bag"></i>Orders</a>
+                            <a class="nav-link" id="payment-nav" href="" th:href="@{/user/wallet}"><i
+                                    class="fa fa-credit-card"></i>Wallet</a>
+                                    <a class="nav-link" id="wallet" th:href="@{/user/referEarn}"><i
+                                        class="fa-solid fa-handshake"></i>Refer & Earn</a>
+                            <a class="nav-link" id="address-nav" data-toggle="pill" href="#address-tab" role="tab"><i
+                                    class="fa fa-map-marker-alt"></i>address</a>
+
+                            <a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+
+                            <div class="tab-pane fade show active" id="address-tab" role="tabpanel"
+                                aria-labelledby="address-nav">
+                                <h4>Address</h4>
+                                <form method="post">
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <label for="country" class="form-label">Country </label>
+                                            <select name="country" class="form-select">
+                                                <option selected disabled>select country</option>
+                                                <option th:each="country: ${country}" th:value="${country.id}"
+                                                    th:text="${country.countryName}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="fullName" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" name="fullName"
+                                                placeholder="fullName" aria-describedby="textHelp" required th:value="${address.fullName}">
+                                        </div>
+                                        <input type="hidden" name="addressId" th:value="${address.id}">
+                                        <div class="col-md-6">
+                                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                                            <input type="text" class="form-control" name="mobilePhoneNumber" id="phoneNumber"
+                                                pattern="[0-9]{10}"
+                                                title="Mobile phone number must have exactly 10 digits"
+                                                placeholder="Phone Number" aria-describedby="textHelp" required th:value="${address.mobilePhoneNumber}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="pinCode" class="form-label">Pin Code</label>
+                                            <input type="text" class="form-control" placeholder="Pin Code" id="pinCode" name="pinCode"
+                                                aria-describedby="textHelp" th:value="${address.pinCode}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="buildingNo" class="form-label">Building No.</label>
+                                            <input type="text" class="form-control" placeholder="Building Number"
+                                                id="buildingNo" aria-describedby="textHelp" th:value="${address.buildingNo}" required >
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="street" class="form-label">Street</label>
+                                            <input type="text" class="form-control" placeholder="Street" id="street" th:value="${address.street}"
+                                                aria-describedby="textHelp" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="landmark" class="form-label">Landmark</label>
+                                            <input type="text" class="form-control" placeholder="Landmark" id="landmark" th:value="${address.Landmark}"
+                                                aria-describedby="textHelp" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="city" class="form-label">Town/City</label>
+                                            <input type="text" class="form-control" placeholder="Town/City" id="city" th:value="${address.city}"
+                                                aria-describedby="textHelp" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="state" class="form-label">State</label>
+                                            <input type="text" class="form-control" placeholder="State" id="state" th:value="${address.state}"
+                                                aria-describedby="textHelp" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="address" class="form-label">Default Address: 
+                                                <input name="defaultAddresscheck" 
+                                                    type="checkbox" value="true" /></label>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <button class="btn" th:formaction="@{/user/getmodaddress}" type="submit">Add Address</button>
+                                            <br><br>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+
+
+    </section>
+
+</body>
+
+</html>

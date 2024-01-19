@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit product page</title>
+</head>
+
+<body>
+
+    <section>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card " style="width: 100vw;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Coupon List</h4>
+                            <!-- <div class="ms-4"><a th:href="@{/admin/restoredeletedproducts}" ><i class="fa-solid fa-trash-can-arrow-up"></i></a></div> -->
+                            <div class="table-responsive">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">code</th>
+                                            <th scope="col">CouponDescription</th>
+                                            <th scope="col">StartDate</th>
+                                            <th scope="col">EndDate</th>
+                                            <th scope="col">CouponStatus</th>
+                                            <th scope="col">CouponUsages</th>
+                                            <th class="text-center" colspan="1" scope="col">actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="coupon,stat:${coupons}">
+                                            <form th:action="@{/admin/updateCoupon}" method="post">
+                                                <td th:text="${stat.index+1}"></td>
+                                                <td th:text="${coupon.code}"></td>
+                                                <td th:text="${coupon.CouponDescription}"></td>
+                                                <td th:text="${coupon.startDate}"></td>
+                                                <td th:text="${coupon.endDate}"></td>
+                                                <td th:text="${coupon.status}"></td>
+                                                <td th:if="${coupon.couponUsages!=null}">
+                                                    <ul th:each="coup:${coupon.couponUsages}">
+                                                        <li>[[${coup.user.usename}]]</li>
+                                                    </ul>
+                                                </td>
+                                                <!-- <td>
+                                                    <select id="status" name="status" required>
+                                                        <option th:each="status : ${stats}" th:value="${status}" th:text="${status}"></option>
+                                                    </select>
+                                                </td> -->
+                                                <input type="hidden" th:value="${coupon.code}" name="CouponCode">
+                                                <!-- <td><a  class="btn btn-dark rounded"><i class="fa-solid fa-recycle"></i></a></td> -->
+                                                <td><button type="submit" class="btn btn-dark rounded"><i
+                                                            class="fa-solid fa-pen-to-square"></i></button></td>
+                                                <!-- <td><a th:href="@{/admin/updateCouponForm/{code}(code=${coupon.code})}"><i class="fa-solid fa-pen-to-square"></i></a></td> -->
+
+                                            </form>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <h3 class="alert alert-danger text-center" th:if="${#lists.isEmpty(coupons)}">Cart is
+                                                empty</h3>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        
+
+    </section>
+
+</body>
+
+</html>

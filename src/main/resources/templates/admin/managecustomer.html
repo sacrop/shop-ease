@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+  <!-- Meta tags for character set and viewport -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Page title -->
+  <title>Manage Customer</title>
+</head>
+
+<body>
+
+  <section>
+    <!-- Content wrapper -->
+    
+      <div class="row">
+        <!-- Main card with customer list -->
+        <div class="col-md-7 grid-margin stretch-card" style="width: 100vw;">
+          <div class="card">
+            <div class="card-body">
+              <!-- Card title -->
+              <h4 class="card-title">Customer List</h4>
+
+              <!-- Search form -->
+              <form class="d-flex my-4" th:action="@{/admin/search}" method="get">
+                <input class="form-control me-5 bg-gradient" style="border-radius: 30px; background-color: #f2edf3;"
+                  type="search" placeholder="Search" aria-label="Search" name="searchQuery">
+                <button class="btn btn-outline-success btn-dark" style="border-radius: 30px;"
+                  type="submit">Search</button>
+                <a class="btn btn-outline-warning btn-dark mx-3 text-light" style="border-radius: 30px;" href=""
+                  th:href="@{/admin/managecust}">clear</a>
+              </form>
+
+              <!-- Table for displaying customer information -->
+              <div class="table-responsive">
+                <table class="table table-light table-bordered">
+                  <thead>
+                    <!-- Table headers -->
+                    <tr class="text-center">
+                      <th scope="col">Sno</th>
+                      <th scope="col">Image</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Phone number</th>
+                      <th scope="col">Controls</th>
+                    </tr>
+                  </thead>
+
+                  <!-- Table body with customer information -->
+                  <tbody th:each="tableuser,stat:${user}">
+                    <tr class="my-auto mx-auto" th:if="${tableuser.role != 'ROLE_ADMIN'}">
+                      <td th:text="${stat.index+1}"></td>
+                      <td>
+                        <!-- Customer image -->
+                        <div class="image-container"
+                          style="display: flex; flex-direction: column; align-items: center;">
+
+                          <img th:if="${tableuser.imagepath!= null}" th:src="@{'/img/' + ${tableuser.imagepath}}"
+                            style="height: 6rem; width: 6rem; padding: 1rem;" alt="img">
+                          <img th:if="${tableuser.imagepath == null}"
+                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                            style="height: 6rem; width: 6rem; padding: 1rem;" alt="img">
+
+                        </div>
+                      </td>
+                      <td th:text="${tableuser.usename}"></td>
+                      <td th:text="${tableuser.email}"></td>
+                      <td th:text="${tableuser.phonenumber}"></td>
+                      <td>
+                        <!-- Form for updating customer information -->
+                        <form action="" th:action="@{/admin/updatecust}" method="post">
+                          <!-- Switch for applying changes -->
+                          <div class="form-switch d-flex  justify-content-center align-items-center "
+                            th:if="${tableuser.token==0}">
+                            <input type="hidden" name="userId" th:value="${tableuser.id}">
+                            <input class="form-check-input me-3" type="checkbox" id="flexSwitchCheckChecked" checked
+                              value="true" name="lock">
+                            <button class="btn btn-outline-dark" style="border-radius: 30px;"
+                              type="submit">Apply</button>
+                          </div>
+                          <!-- Switch when token is not zero -->
+                          <div class="form-switch d-flex  justify-content-center align-items-center "
+                            th:if="${tableuser.token!=0}">
+                            <input type="hidden" name="userId" th:value="${tableuser.id}">
+                            <input class="form-check-input me-3" type="checkbox" id="flexSwitchCheckChecked"
+                              value="true" name="lock">
+                            <button class="btn btn-outline-dark" type="submit">Apply</button>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  </section>
+
+</body>
+
+</html>

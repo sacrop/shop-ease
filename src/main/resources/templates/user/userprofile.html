@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+     
+        <!-- My Account Start -->
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                            <!-- <a class="nav-link active" id="dashboard-nav" data-toggle="pill" href="#dashboard-tab"
+                                role="tab"><i class="fa fa-tachometer-alt"></i>Dashboard</a> -->
+                            <a class="nav-link" id="account-nav" data-toggle="pill" href="#account-tab" role="tab"><i
+                                    class="fa fa-user"></i>Account Details</a>
+                            <a class="nav-link" id="orders-nav" href="" th:href="@{/user/orders}"><i
+                                    class="fa fa-shopping-bag"></i>Orders</a>
+                            <a class="nav-link" id="payment-nav" href="" th:href="@{/user/wallet}"><i
+                                    class="fa fa-credit-card"></i>Wallet</a>
+                                    <a class="nav-link" id="wallet" th:href="@{/user/referEarn}"><i
+                                        class="fa-solid fa-handshake"></i>Refer & Earn</a>
+                            <a class="nav-link" id="address-nav" href="" th:href="@{/user/address}"><i
+                                    class="fa fa-map-marker-alt"></i>address</a>
+
+                            <a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="account-tab" role="tabpanel"
+                                aria-labelledby="account-nav">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <div class="p-3 m-3">
+                                    <img th:if="${users.imagepath!= null}" th:src="@{'/img/' + ${users.imagepath}}"
+                                        alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                                    <img th:if="${users.imagepath == null}"
+                                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                                        alt="default-avatar" class="rounded-circle img-fluid" style="width: 150px;">
+
+                                </div>
+
+
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <h4>Account Details</h4>
+                                <form th:action="@{/user/updateprofile}" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                            <label for="exampleFormControlFile1">Upload image</label>
+                                            <input type="file" class="form-control-file" id="exampleFormControlFile1" multiple="multiple"
+                                            name="imagefile">
+                                        </div>                                     
+                                        <div class="col-md-6">
+                                            <label for="fullname">Full Name</label>
+                                            <input class="form-control" type="text" th:value="${users.usename}"
+                                                placeholder="full name" name="name" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="fullname">Phone number</label>
+                                            <input class="form-control" type="text" th:value="${users.phonenumber}"
+                                                placeholder="Mobile" name="phonenumber" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="fullname">Email</label>
+                                            <input class="form-control" type="text" th:value="${users.email}"
+                                                placeholder="Email" name="email" required>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <button class="btn btn-primary" type="submit">Update Account</button>
+                                            <br><br>
+                                        </div>
+                                    </div>
+                                </form>
+                                <h4>Password change</h4>
+                                <form action="" th:action="@{/user/updatepassword}" method="post">
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <input class="form-control" type="password" placeholder="Current Password"
+                                                name="currentPassword">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input class="form-control" type="password" placeholder="New Password"
+                                                name="newPassword">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input class="form-control" type="password" placeholder="Confirm Password"
+                                                name="confirmPassword">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+
+
+    </section>
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+2024-01-11T11:11:45.701+05:30  INFO 9264 --- [restartedMain] com.shop.ease.EaseApplication            : Starting EaseApplication using Java 20.0.2 with PID 9264 (C:\Users\sidha\Documents\ease\target\classes started by sidha in C:\Users\sidha\Documents\ease)
+2024-01-11T11:11:45.711+05:30  INFO 9264 --- [restartedMain] com.shop.ease.EaseApplication            : No active profile set, falling back to 1 default profile: "default"
+2024-01-11T11:11:45.835+05:30  INFO 9264 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-01-11T11:11:45.836+05:30  INFO 9264 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-01-11T11:11:49.211+05:30  INFO 9264 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-01-11T11:11:49.515+05:30  INFO 9264 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 289 ms. Found 21 JPA repository interfaces.
+2024-01-11T11:11:51.514+05:30  INFO 9264 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9090 (http)
+2024-01-11T11:11:51.546+05:30  INFO 9264 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-01-11T11:11:51.547+05:30  INFO 9264 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2024-01-11T11:11:51.766+05:30  INFO 9264 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-01-11T11:11:51.767+05:30  INFO 9264 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5929 ms
+2024-01-11T11:11:52.503+05:30  INFO 9264 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-01-11T11:11:52.694+05:30  INFO 9264 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.2.13.Final
+2024-01-11T11:11:52.701+05:30  INFO 9264 --- [restartedMain] org.hibernate.cfg.Environment            : HHH000406: Using bytecode reflection optimizer
+2024-01-11T11:11:53.581+05:30  INFO 9264 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-01-11T11:11:53.694+05:30  INFO 9264 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-01-11T11:11:54.563+05:30  INFO 9264 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@65991494
+2024-01-11T11:11:54.571+05:30  INFO 9264 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-01-11T11:11:54.826+05:30  WARN 9264 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-01-11T11:11:54.832+05:30  WARN 9264 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2024-01-11T11:11:57.833+05:30  INFO 9264 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-01-11T11:11:58.287+05:30  INFO 9264 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-01-11T11:11:59.021+05:30  INFO 9264 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-01-11T11:12:01.074+05:30  WARN 9264 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-01-11T11:12:01.420+05:30  INFO 9264 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-01-11T11:12:02.219+05:30  INFO 9264 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2024-01-11T11:12:02.307+05:30  INFO 9264 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@106de27c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2a3cab84, org.springframework.security.web.context.SecurityContextHolderFilter@2f7be291, org.springframework.security.web.header.HeaderWriterFilter@1addc50e, org.springframework.security.web.authentication.logout.LogoutFilter@6705c9c0, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@58c028ec, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4b7021f7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@d76337, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@73626167, org.springframework.security.web.access.ExceptionTranslationFilter@1a85b93d, org.springframework.security.web.access.intercept.AuthorizationFilter@562d88d5]
+2024-01-11T11:12:03.050+05:30  INFO 9264 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-01-11T11:12:03.299+05:30  INFO 9264 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9090 (http) with context path ''
+2024-01-11T11:12:03.370+05:30  INFO 9264 --- [restartedMain] com.shop.ease.EaseApplication            : Started EaseApplication in 18.523 seconds (process running for 20.104)
+2024-01-11T11:12:03.555+05:30  INFO 9264 --- [http-nio-9090-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-01-11T11:12:03.561+05:30  INFO 9264 --- [http-nio-9090-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-01-11T11:12:03.563+05:30  INFO 9264 --- [http-nio-9090-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2024-01-11T11:12:03.662+05:30  WARN 9264 --- [http-nio-9090-exec-2] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.

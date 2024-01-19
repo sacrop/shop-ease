@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+
+        <!-- breadcrumb -->
+        <!-- <div>
+            <div class="breadcrumb-wrap">
+                <div class="container-fluid">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+
+        <!-- My Account Start -->
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                            <!-- <a class="nav-link active" id="dashboard-nav" data-toggle="pill" href="#dashboard-tab"
+                                role="tab"><i class="fa fa-tachometer-alt"></i>Dashboard</a> -->
+                            <a class="nav-link" id="account-nav" href="" th:href="@{/user/userprofile}"><i
+                                    class="fa fa-user"></i>Account Details</a>
+                            <a class="nav-link" id="orders-nav" href="" th:href="@{/user/orders}"><i
+                                    class="fa fa-shopping-bag"></i>Orders</a>
+                            <a class="nav-link" id="payment-nav" data-toggle="pill" href="#payment-tab" role="tab"><i
+                                    class="fa fa-credit-card"></i>Wallet</a>
+                            <a class="nav-link" id="wallet" th:href="@{/user/referEarn}"><i
+                                    class="fa-solid fa-handshake"></i>Refer & Earn</a>
+                            <a class="nav-link" id="address-nav" th:href="@{/user/address}"><i
+                                    class="fa fa-map-marker-alt"></i>address</a>
+
+                            <a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="payment-tab" role="tabpanel"
+                                aria-labelledby="payment-nav">
+
+                                <div class="nav flex-row nav-pills" role="tablist" aria-orientation="horizontal">
+
+                                    <a class="nav-link" id="payment-nav" data-toggle="pill" href="#wallet-tab"
+                                        role="tab"><i class="fa fa-credit-card"></i>Wallet</a>
+                                    <a class="nav-link" id="payment-nav" data-toggle="pill" href="#transaction-tab"
+                                        role="tab"><i class="fa fa-credit-card"></i>transaction</a>
+                                    <!-- <a class="nav-link" id="payment-nav" data-toggle="pill" href="#amountstatus-tab"
+                                        role="tab"><i class="fa fa-credit-card"></i>status</a> -->
+
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="wallet-tab" role="tabpanel">
+                                            <div class="text-center">
+                                                <h3>Wallet : <i class="fa-solid fa-wallet fa-2xl"></i></h3>
+                                            </div>
+                                            <div class="alert alert-success text-center m-3 p-3">
+                                                <h4>current balance :</h4><span>₹
+                                                </span><span>[[${wallets.currentBalance}]]</span>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="transaction-tab" role="tabpanel"
+                                            aria-labelledby="orders-nav">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Message</th>
+                                                        <th scope="col">Amount transferred</th>
+                                                        <th scope="col">DateTime</th>
+                                                        <th scope="col">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="wallethistory,istart:${wallethistorys}">
+                                                        <th scope="row">[[${istart.index+1}]]</th>
+                                                        <td>[[${wallethistory.description}]]</td>
+                                                        <td>[[${wallethistory.amountTransferred}]]</td>
+                                                        <td>
+                                                            <script th:inline="javascript">
+                                                                /* Extracting the date string from Thymeleaf expression */
+                                                                var orderDateTime = /*[[${wallethistory.transactionTime}]]*/ '';
+        
+                                                                /* Creating a JavaScript Date object from the string */
+                                                                var date = new Date(orderDateTime);
+        
+                                                                /* Formatting the date to display only the date part */
+                                                                var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        
+                                                                /* Setting the formatted date as the text content of the <td> element */
+                                                                document.write(formattedDate);
+                                                            </script>
+                                                        </td>
+                                                        <th:block th:if="${wallethistory.status}==${walletstatuses[1]}">
+                                                            <td class="text-success">[[${wallethistory.status}]]</td>
+                                                        </th:block>
+                                                        <th:block th:if="${wallethistory.status}==${walletstatuses[0]}">
+                                                            <td class="text-danger">[[${wallethistory.status}]]</td>
+                                                        </th:block>
+                                                        
+
+                                                    </tr>
+                                                   
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+
+
+    </section>
+
+</body>
+
+</html>

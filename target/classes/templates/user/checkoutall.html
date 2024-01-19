@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+        <!-- breadcrumb -->
+        <!-- <div>
+            <div class="breadcrumb-wrap">
+                <div class="container-fluid">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+
+        <!-- Checkout Start -->
+        <div class="checkout">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="checkout-inner">
+                            <div class="billing-address">
+                                <h2>Billing Address</h2>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <a class="btn" href="">add new address</a>
+                                    </div>
+                                    <form id="checkout-form" method="post" th:action="@{/user/orderall}">
+                                        <div class="col-lg-12 form-group my-2">
+                                            <label for="address" class="form-label">Select Address </label>
+                                            <select id="addressid" name="addressId" class="form-control" required
+                                                aria-placeholder="select address">
+
+                                                <option th:each="addresslst: ${addresslist}" th:value="${addresslst.id}"
+                                                    th:text="${addresslst.street + ', ' + addresslst.city + ', ' + addresslst.state}">
+                                                </option>
+                                            </select>
+                                            <div class="checkout-summary">
+                                                <h1>Cart Total</h1>
+                                                <div th:each="item:${cartItems}">
+                                                    <p>ITEM :</p>
+                                                    <p>[[${item.product.pname}]] <span id="productprice"
+                                                            th:value="${item.product.price}"> ₹
+                                                            [[${item.product.price}]]</span></p>
+                                                    <p class="sub-total">quantity<span id="productquantity"
+                                                            th:value="${item.quantity}">[[${item.quantity}]]</span>
+                                                    </p>
+                                                </div>
+                                                <p class="ship-cost">Shipping Cost<span>₹40</span></p>
+                                                <h2>Grand Total<span id="grandtotal">[[${totalprice}]]</span></h2>
+
+                                            </div>
+                                        </div>
+                                        <div class="checkout-summary">
+                                            <div class="coupon">
+                                                <select name="paracat" id="coupon_code" class="form-control"
+                                                    aria-label="Default select example">
+                                                    <option value="" disabled selected>Select a Coupon
+                                                    </option>
+                                                    <option th:each="coupon: ${coupons}" th:value="${coupon.code}"
+                                                       >[[${coupon.code}]]-> [[${coupon.couponDescription}]]</option>
+                                                </select>
+                                                <button class="btn mx-3" type="button" id="coupon_button">Apply
+                                                    Code</button>
+                                            </div>
+                                        </div>
+                                        <div class="checkout-payment">
+                                            <div class="payment-methods">
+                                                <h1>Payment Methods</h1>
+                                                <div class="payment-method">
+                                                    <div class="custom-control">
+                                                        <input type="checkbox" name="useWallet" value="true"
+                                                            id="payment-7" class="custom-control-input">
+                                                        <label class="custom-control-label" for="payment-7"> Wallet
+                                                        </label>
+                                                    </div>
+                                                    <div class="payment-content" id="payment-7-show">
+
+                                                        <h2 th:if="${wallets.currentBalance>=totalprice}">₹<span
+                                                                id="walletBalance"
+                                                                th:value="${wallets.currentBalance}">[[${wallets.currentBalance}]]</span>
+
+                                                        </h2>
+                                                        <h2 th:if="${wallets.currentBalance<totalprice}"
+                                                            class="text-danger">insufficient balance :
+                                                            <span>[[${wallets.currentBalance}]]</span>
+                                                        </h2>
+                                                    </div>
+                                                </div>
+                                                <div class="payment-method">
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="payment-2"
+                                                            name="payment" value="rayzorpay">
+                                                        <label class="custom-control-label" for="payment-2">Razor
+                                                            Pay</label>
+
+                                                    </div>
+                                                    <div class="payment-content" id="payment-2-show">
+                                                        <p>
+                                                        <h2>₹<span id="payment_amount" th:text="${totalprice}"></span>
+                                                        </h2>
+                                                        <button class="btn btn-primary" type="button"
+                                                            onclick="paymentStart()"> Pay now</button>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="payment-method">
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="payment-5"
+                                                            name="payment" value="cash" onchange="uncheckWallet()">
+                                                        <label class="custom-control-label" for="payment-5">Cash on
+                                                            Delivery</label>
+                                                    </div>
+                                                    <div class="payment-content" id="payment-5-show">
+                                                        <p>
+
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <input id="hidaddressid" type="hidden" name="addressId"> -->
+
+                                            <input type="hidden" id="hidgrandtotal" name="cartprice"
+                                                th:value="${totalprice}">
+                                            <div class="checkout-btn">
+                                                <button type="submit" id="placeorderbtn"> Place
+                                                    Order</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function () {
+                $('#coupon_button').click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: '/user/applyCoupon',
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            name: $('#coupon_code').val(),
+                            totalprice: $('#hidgrandtotal').val()
+                        }),
+                        success: function (response) {
+                            // Update the HTML content and hidden input value
+                            $('#payment_amount').text(response);
+                            $('#hidgrandtotal').val(response);
+
+                            // Optional: Show a success message
+                            alert('Coupon applied successfully. New total amount: ₹' + response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            alert(error.responseText);
+                        }
+                    });
+                });
+            });
+
+            var totalprices = document.getElementById('grandtotal').textContent;
+            var checkbox = document.getElementById('payment-7');
+            var cashondeliveryButton = document.getElementById('payment-5');
+            var rayzorButton = document.getElementById('payment-2');
+            var walletAmount = [[${ wallets.currentBalance }]];
+
+            cashondeliveryButton.addEventListener('change',function(){
+                if(this.checked){
+                    document.getElementById('placeorderbtn').style.display = 'block';
+                }
+            })
+
+            checkbox.addEventListener('change', function () {
+                if (this.checked) {
+                    cashondeliveryButton.disabled = true;
+                    cashondeliveryButton.checked = false;
+                    var absoluteDifference = Math.abs(totalprices - walletAmount);
+                    $('#payment_amount').text(absoluteDifference);
+                    rayzorButton.disabled = false;
+                    if (walletAmount > totalprices) {
+                        rayzorButton.disabled = true;
+                        rayzorButton.checked = false;
+                        document.getElementById('placeorderbtn').style.display = 'block';
+                    }
+                }
+                else {
+
+                    cashondeliveryButton.disabled = false;
+                    rayzorButton.disabled = false;
+                }
+            });
+            function uncheckWallet() {
+                var walletCheckbox = document.getElementById('payment-7');
+                $('#payment_amount').text(totalprices);
+                walletCheckbox.checked = false;
+            }
+
+            document.getElementById('payment-2').addEventListener('change', function () {
+                if (this.checked) {
+                    document.getElementById('placeorderbtn').style.display = 'none';
+                   
+                } else {
+                    document.getElementById('placeorderbtn').style.display = 'block';
+                    
+                }
+            });
+
+            // rayzor pay integration
+            let amount;
+            const paymentStart = () => {
+                console.log("payment started");
+                amount = $("#payment_amount").text();
+                // Make AJAX request after getting the amount
+                $.ajax({
+                    url: '/user/create_order',
+                    data: JSON.stringify({ amount: amount }),
+                    contentType: 'application/json',
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        // Invoked when success 
+                        console.log(response);
+                        let options = {
+                            "key": "rzp_test_XlwVkMu1Zy8MgK", // Enter the Key ID generated from the Dashboard
+                            "amount": response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "currency": "INR",
+                            "name": "Easy Shop", //your business name
+                            "description": "Test Transaction",
+                            "image": "https://rzp-1415-prod-dashboard-activation.s3.amazonaws.com/org_100000razorpay/main_logo/phpAJgHea",
+                            "order_id": response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                            "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+                            handler: function (response) {
+                                console.log(response.razorpay_payment_id);
+                                console.log(response.razorpay_order_id);
+                                console.log(response.razorpay_signature)
+
+                                $('#checkout-form').submit();
+                            },
+                            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                                "name": "", //your customer's name
+                                "email": "",
+                                "contact": "" //Provide the customer's phone number for better conversion rates 
+                            },
+                            "notes": {
+                                "address": "Razorpay Corporate Office"
+                            },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
+                        };
+                        let rzp1 = new Razorpay(options);
+                        // document.getElementById('rzp-button1').onclick = function (e) {
+                        rzp1.on('payment.failed', function (response) {
+                            console.log(response.error.code);
+                            console.log(response.error.description);
+                            console.log(response.error.source);
+                            console.log(response.error.step);
+                            console.log(response.error.reason);
+                            console.log(response.error.metadata.order_id);
+                            console.log(response.error.metadata.payment_id);
+                            alert("oops payment failed")
+                        });
+                        rzp1.open();
+                        // Assuming your form has an ID like 'checkout-form', submit the form
+
+
+                    },
+                    error: function (error) {
+                        // Invoked when some error occurred
+                        console.log(error + " error occurred");
+                        alert("Payment failed. Please try again.");
+                    }
+                });
+            };
+        </script>
+
+    </section>
+
+</body>
+
+</html>

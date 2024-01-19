@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product</title>
+</head>
+
+<body>
+    <section>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Add Product</h4>
+                            <div class="table-responsive">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <form th:action="@{/admin/update}" method="post" enctype="multipart/form-data">
+
+                                    <div class="form-group">
+                                        <label for="productname">Product Name</label>
+                                        <input type="hidden" name="productId" th:value="${products.id}">
+                                        <input type="text" class="form-control border border-dark " id="productname"
+                                            name="pname" th:value="${products.pname}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Product Description</label>
+                                        <textarea class="form-control border border-dark"
+                                            id="exampleFormControlTextarea1" rows="3" name="pdescription"
+                                            th:text="${products.pdescription}" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Product Specification</label>
+                                        <textarea class="form-control border border-dark"
+                                            id="exampleFormControlTextarea2" rows="3" name="productSpecification"
+                                            th:text="${products.productSpecification}" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prodprice">Product Price</label>
+                                        <input type="text" class="form-control border border-dark " id="prodprice"
+                                            oninput="validateDouble(this)" name="price" th:value="${products.price}"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category">Category Name</label>
+                                        <select id="category" name="cate" class="form-select"
+                                            aria-label="Default select example" onchange="fetchSubcategories()">
+                                            <option value="0" selected>select Category</option>
+                                            <option th:each="category : ${category}" th:value="${category.catid}"
+                                                th:text="${category.catname}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="subcategory">Subcategory Name</label>
+                                        <select id="subcategory" name="subcat" class="form-select"
+                                            aria-label="Default select example">
+                                            <option value="0" selected>select Subcategory</option>
+                                            <option value="0"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">Upload image</label>
+                                            <input class="form-control" type="file" id="formFile" multiple="multiple"
+                                                name="imagefile">
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+        <script>
+            function validateDouble(input) {
+                // Replace non-numeric characters with an empty string
+                input.value = input.value.replace(/[^0-9.]/g, '');
+
+                // Ensure there's only one dot (decimal point)
+                if (input.value.split('.').length > 2) {
+                    input.value = input.value.substring(0, input.value.lastIndexOf('.'));
+                }
+            }
+
+            function fetchSubcategories() {
+                const categoryId = document.getElementById('category').value;
+                const apiUrl = `http://localhost:9090/admin/getsubcategories/${categoryId}`;
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Received JSON data:", data);
+
+                        const subcategorySelect = document.getElementById('subcategory');
+                        subcategorySelect.innerHTML = ''; // Clear existing options
+
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = 0;
+                        defaultOption.text = "select subcategory";
+                        subcategorySelect.appendChild(defaultOption);
+
+                        data.forEach(subcategory => {
+                            console.log("Subcategory:", subcategory.subcatname);
+
+                            const option = document.createElement('option');
+                            option.value = subcategory.id;
+                            option.text = subcategory.subcatname;
+                            subcategorySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => alert(error + "failed"));
+
+                return false;
+            }
+
+        </script>
+    </section>
+</body>
+
+</html>

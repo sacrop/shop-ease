@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <section>
+
+
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="" th:href="@{/user/}">
+                                <img src="" th:src="@{/img/logo.png}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- <div class="search">
+                            <input type="text" placeholder="Search">
+                            <button><i class="fa fa-search"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="" th:href="@{/user/wishlist}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                            </a>
+                            <a href="" th:href="@{/user/cartItems}" class="btn wishlist">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar End -->
+        <!-- Breadcrumb Start -->
+        <!-- <div class="breadcrumb-wrap">
+            <div class="container-fluid">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Products</a></li>
+                    <li class="breadcrumb-item active">My Account</li>
+                </ul>
+            </div>
+        </div> -->
+        <!-- Breadcrumb End -->
+
+        <!-- My Account Start -->
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                            <!-- <a class="nav-link active" id="dashboard-nav" data-toggle="pill" href="#dashboard-tab"
+                                role="tab"><i class="fa fa-tachometer-alt"></i>Dashboard</a> -->
+                            <a class="nav-link" id="account-nav" th:href="@{/user/userprofile}"><i
+                                    class="fa fa-user"></i>Account Details</a>
+                            <a class="nav-link" id="orders-nav" th:href="@{/user/orders}"><i
+                                    class="fa fa-shopping-bag"></i>Orders</a>
+                            <a class="nav-link" id="payment-nav" th:href="@{/user/wallet}"><i
+                                    class="fa fa-credit-card"></i>Wallet</a>
+                            <a class="nav-link" id="refer-nav" data-toggle="pill" href="#refer-tab" role="tab"><i
+                                    class="fa-solid fa-handshake"></i></i>Refer & Earn</a>
+                            <a class="nav-link" id="address-nav" th:href="@{/user/address}"><i
+                                    class="fa fa-map-marker-alt"></i>address</a>
+
+                            <a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="refer-tab" role="tabpanel"
+                                aria-labelledby="refer-nav">
+
+                                <div>
+                                    <h2 class="text-dark">Refer and Earn</h2>
+                                </div>
+                                <div class="referbox">
+                                    <th:block th:if="${referrals != null}">
+                                        <input type="text" id="inputFieldId" th:value="${referrals.referalCode}" disabled>
+                                        <button class="copy-button" onclick="copyText()">Copy</button>
+                                    </th:block>
+                                    <th:block th:if="${referrals == null}">
+                                        <form th:action="@{/user/showReferal}" method="post">
+                                            <button type="submit" class="referral-button">Generate Referral</button>
+                                        </form>
+                                    </th:block>
+                                </div>
+                                <div class="referral-offer">
+                                    <h4>📜 Terms and Conditions</h4>
+                                    <p>🔆
+                                        <strong>Referral Limit:</strong> A user can only refer to a maximum of 2 users.
+                                    </p>
+                                    <p>🔆
+                                        <strong>Referral Offer:</strong> For every successful referral, both the
+                                        referrer and the referred user will receive a referral offer of 100 credits to
+                                        their wallet.
+                                    </p>
+                                    <p>🔆
+                                        <strong>Offer Validity:</strong> This offer is valid for a certain period.
+                                        Please check the validity period on the offer details page.
+                                    </p>
+                                    <p>🔆
+                                        <strong>Usage:</strong> The referral offer credits can be used for future
+                                        purchases or services.
+                                    </p>
+                                    <p>🔆
+                                        <strong>Terms and Conditions:</strong> Please read and agree to our terms and
+                                        conditions before using this offer.
+                                    </p>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+        <script>
+            function copyText() {
+                var stringtext = document.getElementById("inputFieldId");
+                navigator.clipboard.writeText(stringtext.value).then(function () {
+                    alert("Copied the text: " + stringtext.value);
+                }).catch(function (err) {
+                    alert('Could not copy text: ', err);
+                });
+            }
+
+        </script>
+
+    </section>
+
+</body>
+
+</html>

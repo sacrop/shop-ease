@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product</title>
+</head>
+
+<body>
+    <section>
+        
+            <div class="row">
+                <div class="col-md-7 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Add Coupon</h4>
+                            <div class="table-responsive">
+                                <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                                    role="alert">
+                                    <p class="text-center" th:text="${session.message.content}"></p>
+                                </div>
+                                <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                                <form id="couponForm" th:action="@{/admin/createCoupon}" th:object="${coupons}"
+                                    method="post">
+                                    <div class="form-group">
+                                        <label for="code">Code</label>
+                                        <input type="text" class="form-control" th:field="*{code}"
+                                            placeholder="Enter code" name="code" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="MinPurchase">Minimum Purchase</label>
+                                        <input type="text" class="form-control" th:field="*{minPurchase}" oninput="validateDouble(this)"
+                                            placeholder="Enter minimum purchase amount" name="minPurchase" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="offerdescription">CouponDescription</label>
+                                        <textarea class="form-control border border-dark"
+                                            id="exampleFormControlTextarea1" rows="2" name="CouponDescription" th:field="*{CouponDescription}"
+                                            required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="discount">Discount (%)</label>
+                                        <input type="number" class="form-control" th:field="*{discountPercentage}"
+                                            placeholder="Enter discount" name="discountPercentage" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="startDate">Start Date</label>
+                                        <input type="date" class="form-control" th:field="*{startDate}"
+                                            placeholder="Enter start date" name="startDate"required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" class="form-control" th:field="*{endDate}"
+                                            placeholder="Enter end date" name="endDate" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+        <script>
+            function validateDouble(input) {
+                // Replace non-numeric characters with an empty string
+                input.value = input.value.replace(/[^0-9.]/g, '');
+
+                // Ensure there's only one dot (decimal point)
+                if (input.value.split('.').length > 2) {
+                    input.value = input.value.substring(0, input.value.lastIndexOf('.'));
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('couponForm');
+
+                form.addEventListener('submit', function (event) {
+                    // Validate code
+                    var codeInput = form.querySelector('[name="code"]');
+                    if (codeInput.value.trim() === '') {
+                        alert('Coupon code is required.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // Validate discountPercentage
+                    var discountInput = form.querySelector('[name="discountPercentage"]');
+                    var discountValue = parseFloat(discountInput.value);
+                    if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+                        alert('Enter a valid discount percentage between 0 and 100.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // Validate startDate
+                    var startDateInput = form.querySelector('[name="startDate"]');
+                    var startDateValue = new Date(startDateInput.value);
+                    var currentDate = new Date();
+                    if (startDateValue < currentDate) {
+                        alert('Start date must be in the present or future.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // Validate endDate
+                    var endDateInput = form.querySelector('[name="endDate"]');
+                    var endDateValue = new Date(endDateInput.value);
+                    if (endDateValue <= startDateValue) {
+                        alert('End date must be in the future and after the start date.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // If all validations pass, the form will be submitted
+                    return true;
+                });
+            });
+
+
+        </script>
+    </section>
+</body>
+
+</html>

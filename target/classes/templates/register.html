@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register page</title>
+</head>
+
+<body>
+    <section>
+        <div class="container p-3">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="my-card mb-5 rounded">
+                        <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert"
+                            role="alert">
+                            <p class="text-center" th:text="${session.message.content}"></p>
+                        </div>
+                        <th:block th:text="${@sessionHelper.removemessagefromservice()}"></th:block>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img class="icon-regi " src="" th:src="@{/img/icon1.png}" alt="">
+                        </div>
+                        <h1 class="text-center text-dark mb-5">
+                            Register here
+                        </h1>
+                        <form class="text-dark" action="" th:action="@{/createUser}" method="post"
+                            onsubmit="return validateForm()">
+                            <!-- name section  -->
+                            <div class="mb-4">
+                                <label for="name_label" class="form-label">Name</label>
+
+                                <input type="text" name="usename" class="form-control" id="name_label"
+                                    placeholder="enter text" required>
+                            </div>
+                            <!-- email section  -->
+                            <div class="mb-3">
+                                <label for="email_label" class="form-label">Email address</label>
+                                <input type="email" name="email" class="form-control" id="email_label"
+                                    placeholder="name@example.com" required>
+                            </div>
+                            <!-- password section  -->
+                            <div class="mb-3">
+                                <label for="password_label" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="password_label"
+                                    placeholder="enter password" required>
+                            </div>
+                            <!-- confirm password section  -->
+                            <div class="mb-3">
+                                <label for="confirmpassword_label" class="form-label">confirm Password</label>
+                                <input type="password" name="confirmpassword" class="form-control"
+                                    id="confirmpassword_label" placeholder="enter password" required>
+                            </div>
+                            <!-- qualification  -->
+                            <div class="mb-4">
+                                <label for="phone_number_label" class="form-label">phone number</label>
+                                <input type="text" name="phonenumber" class="form-control" id="phone_number_label"
+                                    placeholder="enter text" required>
+                            </div>
+
+                            <!-- referal code  -->
+                            <!-- referral code section -->
+                            <div class="mb-4">
+                                <label for="referralcode_label" class="form-label">Referral Code</label>
+                                <input type="text" name="referralcode" class="form-control" id="referralcode_label"
+                                    placeholder="Enter referral code">
+                            </div>
+                            <!-- checkbox area  -->
+                            <div class="form-check mb-3 d-flex g-4 ml-5">
+                                <input name="agreement" class="form-check-input" type="checkbox" id="checkagrement"
+                                    value="true">
+                                <label class="form-check-label mx-3" for="checkagrement">
+                                    accept terms and conditions
+                                </label>
+                            </div>
+                            <!-- submission area  -->
+                            <div class="container d-flex justify-content-center align-items-center ">
+                                <button class=" btn btn-primary" type="submit">submit</button>
+                                <button class="btn btn-warning mx-2" type="reset">reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function validateForm() {
+                var password = document.getElementById("password_label").value;
+                var confirmPassword = document.getElementById("confirmpassword_label").value;
+                var phoneNumber = document.getElementById("phone_number_label").value;
+
+                // Check if passwords match
+                if (password != confirmPassword) {
+                    alert("Passwords must match");
+                    return false;
+                }
+
+                // Validate password
+                var lowerCaseLetters = /[a-z]/g;
+                var upperCaseLetters = /[A-Z]/g;
+                var numbers = /[0-9]/g;
+                if (!password.match(lowerCaseLetters) || !password.match(upperCaseLetters) || !password.match(numbers) || password.length < 8) {
+                    alert("Password must contain at least one lowercase letter, one uppercase letter, one number, and be at least 8 characters long");
+                    return false;
+                }
+
+                // Validate phone number
+                var phoneNumberRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+                if (!phoneNumberRegex.test(phoneNumber)) {
+                    alert("Please enter a valid phone number");
+                    return false;
+                }
+
+                return true;
+            }
+
+        </script>
+    </section>
+
+</body>
+
+</html>

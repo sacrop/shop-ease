@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{adbase::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <section>
+        <!-- <div class="breadcrumb-wrap">
+            <div class="container-fluid">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" th:href="@{/admin/}">Home</a></li>
+                </ul>
+            </div>
+        </div> -->
+        
+            <div class="page-header">
+                <h3 class="page-title">
+                    <span class="page-title-icon bg-gradient-primary text-white me-2">
+                        <i class="mdi mdi-home"></i>
+                    </span> Dashboard
+                </h3>
+                <nav aria-label="breadcrumb">
+                    <ul class="breadcrumb">
+                        <!-- <li class="breadcrumb-item active" aria-current="page">
+                            <span></span>Overview <i
+                                class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                        </li> -->
+                    </ul>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-danger card-img-holder text-white">
+                        <div class="card-body">
+                            <img src="assets/images/dashboard/circle.svg"
+                                th:src="@{/adminside/assets/images/dashboard/circle.svg}" class="card-img-absolute"
+                                alt="circle-image" />
+                            <h4 class="font-weight-normal mb-3">Total sales <i
+                                    class="mdi mdi-chart-line mdi-24px float-right"></i>
+                            </h4>
+                            <h2 class="mb-5">₹ [[${totalSale}]]</h2>
+                            <!-- <h6 class="card-text">Increased by 60%</h6> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-info card-img-holder text-white">
+                        <div class="card-body">
+                            <img src="assets/images/dashboard/circle.svg"
+                                th:src="@{/adminside/assets/images/dashboard/circle.svg}" class="card-img-absolute"
+                                alt="circle-image" />
+                            <h4 class="font-weight-normal mb-3">Customers <i
+                                    class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                            </h4>
+                            <h2 class="mb-5">[[${usercount}]]</h2>
+                            <!-- <h6 class="card-text"></h6> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-success card-img-holder text-white">
+                        <div class="card-body">
+                            <img src="assets/images/dashboard/circle.svg"
+                                th:src="@{/adminside/assets/images/dashboard/circle.svg}" class="card-img-absolute"
+                                alt="circle-image" />
+                            <h4 class="font-weight-normal mb-3">Total products <i
+                                    class="mdi mdi-diamond mdi-24px float-right"></i>
+                            </h4>
+                            <h2 class="mb-5">[[${procount}]]</h2>
+                            <!-- <h6 class="card-text">Increased by 5%</h6> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 grid-margin">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Sales table</h4>
+                        </div>
+                        <form method="get">
+                            <div class="row mx-5">
+                                <div class="form-group col-md-4">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate"
+                                        placeholder="Enter start date" name="startDate" required>
+                                </div>
+                                <div class="form-group col-md-4 ">
+                                    <label for="endDate">End Date</label>
+                                    <input type="date" id="endDate" class="form-control" placeholder="Enter end date"
+                                        name="endDate" required>
+                                </div>
+                                <div class="form-group col-lg-4 my-4 d-flex justify-content-start">
+                                    <button type="submit" th:formaction="@{/admin/sales/download}"
+                                        class="btn btn-primary">download</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="width:80%;">
+                                <canvas id="salesChart"></canvas>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script>
+            document.querySelector('input[name="startDate"]').addEventListener('change', validateDates);
+            function validateDates() {
+                const startDateInput = document.querySelector('input[name="startDate"]');
+                const endDateInput = document.querySelector('input[name="endDate"]');
+
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                if (startDate > endDate) {
+                    alert('Start date should be before or on the same date as end date');
+                    startDateInput.value = '';
+                }
+            }
+            const apiUrl = `https://shopease.xyz/admin/getsalesReport`;
+            $(document).ready(function () {
+                fetch(apiUrl,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+
+                        const labels = data.map(point => point.date);
+                        const values = data.map(point => point.amount);
+                        const ctex = document.getElementById('salesChart').getContext('2d');
+                        new Chart(ctex, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Sales Amount',
+                                    data: values,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1,
+                                    fill: false
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        type: 'time',
+                                        time: {
+                                            unit: 'day'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+        </script>
+    </section>
+</body>
+
+</html>
