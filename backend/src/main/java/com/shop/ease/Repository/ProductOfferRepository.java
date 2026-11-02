@@ -11,6 +11,6 @@ public interface ProductOfferRepository extends JpaRepository<ProductOffer,Integ
 
     public boolean existsByProduct(Product product);
 
-    public ProductOffer findById(int id);
+    public ProductOffer findByProductOfferId(int productOfferId);
     
 }

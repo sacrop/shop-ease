@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.ReviewRepository;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
 import com.shop.ease.model.Review;
-import com.shop.ease.model.UserDtls;
 
 @Service
 public class ReviewService {
@@ -23,11 +23,11 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public Review createReview(String name, String email, String description, Product product, UserDtls user,
+    public Review createReview(String name, String email, String description, Product product, MyUserDetails user,
             String ratings) {
         Review review = new Review();
         review.setDate(LocalDate.now());
-        review.setEmail(email);
+        review.setReviewerEmail(email);
         review.setName(name);
         review.setProduct(product);
         review.setRating(ratings);
@@ -58,7 +58,7 @@ public class ReviewService {
         Map<Long,String> avgRating=new HashMap<>();
         for (Product product : productList) {
             String avgRatingss = getAvgRating(product);
-            avgRating.put(product.getId(), avgRatingss);
+            avgRating.put(product.getProductId(), avgRatingss);
         }
         return avgRating;
     }

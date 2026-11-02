@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: shopease-db
+    environment:
+      POSTGRES_DB: shopease
+      POSTGRES_USER: shopease
+      POSTGRES_PASSWORD: shopease123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -39,15 +39,16 @@ import com.shop.ease.helper.MycustomException;
 import com.shop.ease.helper.SalesData;
 import com.shop.ease.model.Category;
 import com.shop.ease.model.Coupon;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Offer;
 import com.shop.ease.model.Order;
 import com.shop.ease.model.OrderItem;
 import com.shop.ease.model.Product;
 import com.shop.ease.model.ProductOffer;
 import com.shop.ease.model.Subcategory;
-import com.shop.ease.model.UserDtls;
 
-import com.shop.ease.service.Catservice;
+
+import com.shop.ease.service.CategoryService;
 import com.shop.ease.service.CouponService;
 import com.shop.ease.service.OfferService;
 import com.shop.ease.service.OrderService;
@@ -65,7 +66,7 @@ public class AdminController {
     private UserRepository userrepo;
 
     @Autowired
-    private Catservice catservice;
+    private CategoryService catservice;
 
     @Autowired
     private ProductService proserv;
@@ -93,7 +94,7 @@ public class AdminController {
     @ModelAttribute
     public void UserDetails(Model m, Principal p) {
         String email = p.getName();
-        UserDtls user = userrepo.findByEmail(email);
+        MyUserDetails user = userrepo.findByEmail(email);
         m.addAttribute("user", user);
 
     }
@@ -112,7 +113,7 @@ public class AdminController {
     @GetMapping("/profile")
     public String getAdminProfile(Model model,Principal principal) {
         model.addAttribute("pageTitle", "Profile page");
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     model.addAttribute("users", user);
         return "admin/adminProfile";
     }
@@ -121,8 +122,8 @@ public class AdminController {
     public String updateProfile(Principal principal, @RequestParam("name") String usename,
             @RequestParam("email") String email, @RequestParam("phonenumber") String phonenumber, HttpSession session,
             Model model) throws IOException {
-        UserDtls principalUser = userService.getUserByMail(principal.getName());
-        principalUser.setUsename(usename);
+        MyUserDetails principalUser = userService.getUserByMail(principal.getName());
+        principalUser.setUserName(usename);
         model.addAttribute("pageTitle", "Profile page");
         principalUser.setEmail(email);
         principalUser.setPhonenumber(phonenumber);
@@ -135,7 +136,7 @@ public class AdminController {
     public String updatePassword(Principal principal, @RequestParam("currentPassword") String currentPassword,
             @RequestParam("newPassword") String newPassword, @RequestParam("confirmPassword") String confirmPassword,
             HttpSession session, Model model) {
-        UserDtls user = userService.getUserByMail(principal.getName());
+        MyUserDetails user = userService.getUserByMail(principal.getName());
         try {
             model.addAttribute("pageTitle", "Profile page");
             Boolean equality = confirmPassword.equals(newPassword);
@@ -189,7 +190,7 @@ public class AdminController {
     }
 
     @PostMapping("/createcat")
-    public String createCategory(@ModelAttribute CategoryDto cat, @RequestParam("imagefile") MultipartFile files,
+    public String createCategory(@ModelAttribute CategoryDto categoryDto, @RequestParam("imagefile") MultipartFile files,
             @RequestParam("iconClass") String icon,
             HttpSession session, Model model) throws IOException {
         try {
@@ -198,10 +199,10 @@ public class AdminController {
                 throw new MycustomException("icon class is not filled");
             }
 
-            if (cat.getCatname().isEmpty()) {
+            if (categoryDto.getCategoryName().isEmpty()) {
                 throw new MycustomException("Category field cannot be empty");
             } else {
-                Boolean check = catservice.existsByCatname(cat.getCatname());
+                Boolean check = catservice.existsBycategoryName(categoryDto.getCategoryName());
                 if (check) {
                     session.setAttribute("message", new Message("category already exist", "alert-danger"));
                 } else {
@@ -212,7 +213,7 @@ public class AdminController {
                     }
                     Path path = Paths.get(filestore.getAbsolutePath() + File.separator + imagepath);
                     Files.copy(files.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                    Category category = catservice.convertCategoryDtotCategory(cat);
+                    Category category = catservice.convertCategoryDtotCategory(categoryDto);
                     category.setImagePath(imagepath);
                     category.setIconClass(icon);
                     catservice.createcat(category);
@@ -238,23 +239,23 @@ public class AdminController {
     }
 
     @PostMapping("/createsubcat")
-    public String createSubcategory(@ModelAttribute Subcategory subcat, @RequestParam("paracat") String catname,
+    public String createSubcategory(@ModelAttribute Subcategory subcategory, @RequestParam("paracat") String categoryName,
             HttpSession session, Model model) {
         // Boolean check = catservice.existsBySubcatname(subcat.getSubcatname());
-        Boolean verify = catservice.existByCatnameAndSubcatname(subcat.getSubcatname(), catname);
+        Boolean verify = catservice.existBycategoryNameAndSubcategoryName(subcategory.getSubcategoryName(), categoryName);
         model.addAttribute("pageTitle", "Subcategory page");
         try {
-            if (catname.isEmpty()) {
+            if (categoryName.isEmpty()) {
                 throw new MycustomException("select one category");
             }
-            if (subcat.getSubcatname().isEmpty()) {
+            if (subcategory.getSubcategoryName().isEmpty()) {
                 throw new MycustomException("enter a subcategory name");
             }
             if (verify) {
                 throw new MycustomException("Subcategory already exist");
             } else {
-                subcat.setCategory(catservice.getCategorybyname(catname));
-                catservice.createsubcat(subcat);
+                subcategory.setCategory(catservice.getCategorybyname(categoryName));
+                catservice.createsubcat(subcategory);
                 session.setAttribute("message", new Message("Subcategory created successfully", "alert-success"));
             }
         } catch (MycustomException e) {
@@ -309,8 +310,8 @@ public class AdminController {
             HttpSession session) throws IOException {
         try {
             Category category = catservice.getcategoryByid(catid);
-            if (!catname.equals(category.getCatname())) {
-                boolean existcatname = catservice.existsByCatname(catname);
+            if (!catname.equals(category.getCategoryName())) {
+                boolean existcatname = catservice.existsBycategoryName(catname);
                 if (existcatname) {
                     throw new MycustomException("category name already exist");
                 }
@@ -327,7 +328,7 @@ public class AdminController {
             Files.copy(files.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             category.setImagePath(imagepath);
             category.setIconClass(icon);
-            category.setCatname(catname);
+            category.setCategoryName(catname);
             catservice.save(category);
             session.setAttribute("message", new Message("category name updated successfully", "alert-success"));
             return "redirect:/admin/editcategory";
@@ -378,11 +379,11 @@ public class AdminController {
                 throw new MycustomException("price not added");
             } else {
                 Product product = new Product();
-                product.setPname(pname);
-                product.setPdescription(pdesc);
+                product.setProductName(pname);
+                product.setProductDescription(pdesc);
                 product.setProductSpecification(specify);
-                product.setPrice(price);
-                product.setPrice(product.formattedPrice());
+                product.setProductPrice(price);
+                product.setProductPrice(product.formattedPrice());
                 // Product product = proserv.convertProductDtoProduct(products);
                 product.setCategory(catservice.getcategoryByid(catid));
                 product.setSubcategory(catservice.getSubcategoryById(subcatid));
@@ -451,10 +452,10 @@ public class AdminController {
 
         try {
             Product product = proserv.getproductbyid(id);
-            product.setPname(products.getPname());
-            product.setPdescription(products.getPdescription());
+            product.setProductName(products.getProductName());
+            product.setProductDescription(products.getProductDescription());
             product.setProductSpecification(products.getProductSpecification());
-            product.setPrice(products.getPrice());
+            product.setProductPrice(products.getProductPrice());
             if (catservice.getcategoryByid(catid) == null) {
                 throw new Exception("category should be selected");
             }
@@ -518,7 +519,7 @@ public class AdminController {
         for (Order order : orders) {
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderit : orderItems) {
-                double rate = orderit.getProduct().getPrice() * orderit.getQuantity();
+                double rate = orderit.getProduct().getProductPrice() * orderit.getOrderQuantity();
                 sales.add(new SalesData(order.getFormattedOrderDate(), rate));
             }
 
@@ -601,7 +602,7 @@ public class AdminController {
     @GetMapping("/addCoupon")
     public String CouponAdd(Model model) {
         model.addAttribute("pageTitle", "Coupon page");
-        model.addAttribute("coupons", new CouponDto());
+        model.addAttribute("coupons", new CouponDto.Builder().build());
 
         return "admin/addCoupon";
     }
@@ -614,10 +615,10 @@ public class AdminController {
                 throw new MycustomException("Enter the coupon details properly");
             }
             Coupon coupon = couponService.convertCouponDto(coupondto);
-            if (couponService.checkExistCode(coupon.getCode())) {
+            if (couponService.checkExistCode(coupon.getCouponCode())) {
                 throw new MycustomException("coupon already exist");
             }
-            coupon.setStatus(CouponStatus.ACTIVE);
+            coupon.setCouponStatus(CouponStatus.ACTIVE);
             couponService.saveCoupon(coupon);
             session.setAttribute("message", new Message("Coupon created successfully", "alert-success"));
 
@@ -656,9 +657,9 @@ public class AdminController {
         Coupon coupon = couponService.findByCouponId(id);
         coupon.setStartDate(coupondto.getStartDate());
         coupon.setEndDate(coupondto.getEndDate());
-        coupon.setCode(coupondto.getCode());
-        coupon.setMinPurchase(coupondto.getMinPurchase());
-        coupon.setStatus(status);
+        coupon.setCouponCode(coupondto.getCouponCode());
+        coupon.setMinimumPurchase(coupondto.getMinimumPurchase());
+        coupon.setCouponStatus(status);
         couponService.saveCoupon(coupon);
 
         return "redirect:/admin/editCoupon";
@@ -717,7 +718,7 @@ public class AdminController {
     public String updatingOffer(@RequestParam("offerid") int id, @RequestParam("discount") double discount,
             HttpSession session) {
         Offer offer = offerService.findOffer(id);
-        offer.setDiscount(discount);
+        offer.setOfferDiscount(discount);
         offerService.saveOffer(offer);
         session.setAttribute("message", new Message("offer update success", "alert-success"));
         return "redirect:/admin/showOffer";

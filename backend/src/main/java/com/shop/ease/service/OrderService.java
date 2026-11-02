@@ -16,10 +16,10 @@ import com.shop.ease.helper.MycustomException;
 import com.shop.ease.model.Address;
 import com.shop.ease.model.Cart;
 import com.shop.ease.model.CartItem;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Order;
 import com.shop.ease.model.OrderItem;
 import com.shop.ease.model.Product;
-import com.shop.ease.model.UserDtls;
 
 
 import jakarta.transaction.Transactional;
@@ -43,14 +43,14 @@ public class OrderService {
 
     DecimalFormat df = new DecimalFormat("#.00");
 
-    public Order createOrder(Long id, String payment, Double price, UserDtls user, CartItem cartItem, Cart cart) {
+    public Order createOrder(Long id, String payment, Double price, MyUserDetails user, CartItem cartItem, Cart cart) {
         // Assuming addressService is a valid service for getting the address by ID
         Address address = addressService.getAddressById(id);
 
         // Create and save an OrderItem
         OrderItem orderItem = new OrderItem();
         orderItem.setProduct(cartItem.getProduct());
-        orderItem.setQuantity(cartItem.getQuantity());
+        orderItem.setOrderQuantity(cartItem.getQuantity());
 
         orderItemRepository.save(orderItem);
 
@@ -77,13 +77,13 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public Order createSingleorder(Long addressid, double price, UserDtls user, String payment, int quantity,
+    public Order createSingleorder(Long addressid, double price, MyUserDetails user, String payment, int quantity,
             Long productid) {
 
         Address address = addressService.getAddressById(addressid);
         OrderItem orderitem = new OrderItem();
         orderitem.setProduct(productService.getproductbyid(productid));
-        orderitem.setQuantity(quantity);
+        orderitem.setOrderQuantity(quantity);
 
         orderItemRepository.save(orderitem);
         Order order = new Order();
@@ -100,7 +100,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(UserDtls user, Long addressId, String payment, Double grandTotal) {
+    public Order createOrder(MyUserDetails user, Long addressId, String payment, Double grandTotal) {
         try {
             Address address = addressService.getAddressById(addressId);
             if (address == null) {
@@ -125,7 +125,7 @@ public class OrderService {
             for (CartItem cartItem : cartItems) {
                 OrderItem orderItem = new OrderItem();
                 orderItem.setProduct(cartItem.getProduct());
-                orderItem.setQuantity(cartItem.getQuantity());
+                orderItem.setOrderQuantity(cartItem.getQuantity());
                 orderItemRepository.save(orderItem);
                 order.addOrderItem(orderItem);
             }
@@ -146,7 +146,7 @@ public class OrderService {
 
     }
 
-    public List<Order> getOrderByUser(UserDtls user) {
+    public List<Order> getOrderByUser(MyUserDetails user) {
         return orderRepository.findByUser(user);
     }
 
@@ -166,7 +166,7 @@ public class OrderService {
     public void deleteOrderByOrderId(int orderId) {
         List<OrderItem> orderitems = orderItemRepository.findByOrder(orderRepository.findById(orderId));
         for (OrderItem orderitem : orderitems) {
-            orderItemRepository.deleteById(orderitem.getId());
+            orderItemRepository.deleteById(orderitem.getOrderItemId());
         }
         orderRepository.deleteById(orderId);
     }
@@ -207,7 +207,7 @@ public class OrderService {
         return Double.parseDouble(df.format(amount));
     }
 
-    public boolean userProductDelivered(UserDtls user,Product product){
+    public boolean userProductDelivered(MyUserDetails user,Product product){
         List<Order> orderList=orderRepository.findByUser(user);
         for(Order orders:orderList){
             for(OrderItem orderItem:orders.getOrderItems()){

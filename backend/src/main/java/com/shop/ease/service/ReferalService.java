@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.ReferalRepository;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Refferal;
-import com.shop.ease.model.UserDtls;
 
 @Service
 public class ReferalService {
@@ -17,7 +17,7 @@ public class ReferalService {
     private ReferalRepository referalRepository;
 
     
-    public void CreateReferral(UserDtls user) {
+    public void CreateReferral(MyUserDetails user) {
         UUID uuid = UUID.randomUUID();
         String randomString = uuid.toString();
 
@@ -28,7 +28,7 @@ public class ReferalService {
     }
 
 
-    public Refferal findByUser(UserDtls user) {
+    public Refferal findByUser(MyUserDetails user) {
         
         return referalRepository.findByUser(user);
     }
@@ -44,7 +44,7 @@ public class ReferalService {
     }
 
 
-    public UserDtls getUserBycode(String referalcode) {
+    public MyUserDetails getUserBycode(String referalcode) {
         Refferal refferal=referalRepository.findByReferalCode(referalcode);
         return refferal.getUser();
     }

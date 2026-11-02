@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Order;
-import com.shop.ease.model.UserDtls;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order,Integer> {
     
-    public List<Order> findByUser(UserDtls user);
+    public List<Order> findByUser(MyUserDetails user);
 
-    // public List<Order> findByUserOrderByOrderDateTimeDesc(UserDtls user);
-    public List<Order> findAllByUserOrderByOrderDateTimeDesc(UserDtls user);
+    // public List<Order> findByUserOrderByOrderDateTimeDesc(MyUserDetails user);
+    public List<Order> findAllByUserOrderByOrderDateTimeDesc(MyUserDetails user);
      public List<Order> findAllByOrderByOrderDateTimeDesc();
 
     public Order findById(int orderId);

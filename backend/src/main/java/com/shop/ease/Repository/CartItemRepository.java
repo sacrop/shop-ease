@@ -4,8 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.shop.ease.model.CartItem;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
-import com.shop.ease.model.UserDtls;
+
 
 import java.util.List;
 
@@ -15,9 +16,9 @@ public interface CartItemRepository extends JpaRepository<CartItem,Long> {
     
     public boolean existsByProduct(Product product);
 
-    public List<CartItem> findByUserDtls(UserDtls userDtls);
+    public List<CartItem> findByUserDtls(MyUserDetails userDtls);
 
-    public CartItem findByUserDtlsAndProduct(UserDtls user, Product product);
+    public CartItem findByUserDtlsAndProduct(MyUserDetails user, Product product);
 
     public CartItem findById(long id);
 

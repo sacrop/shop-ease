@@ -20,10 +20,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
 
 @Entity
-@Data
 @SQLDelete(sql = "UPDATE product_subcategory SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedSubCategoryFilter", parameters = @ParamDef(name = "isDeleted", type = boolean.class))
 @Filter(name = "deletedSubCategoryFilter", condition = "deleted = :isDeleted")
@@ -31,14 +29,14 @@ import lombok.Data;
 public class Subcategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String subcatname;
+    private int subcategoryId;
+    private String subcategoryName;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "subcategory")
     private List<Product> products=new ArrayList<>();
 
      @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
+    @JoinColumn(name = "category_id")
      @JsonIgnore
     private Category category;
 
@@ -47,8 +45,60 @@ public class Subcategory {
 
     public String toString() {
         return "Subcategory{" +
-                "id=" + id +
-                ", subcatname='" + subcatname + '\'' +
+                "subcategoryId=" + subcategoryId +
+                ", subcategoryName='" + subcategoryName + '\'' +
                 '}';
     }
+
+
+    public int getSubcategoryId() {
+        return subcategoryId;
+    }
+
+
+    public void setSubcategoryId(int subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
+
+
+    public String getSubcategoryName() {
+        return subcategoryName;
+    }
+
+
+    public void setSubcategoryName(String subcategoryName) {
+        this.subcategoryName = subcategoryName;
+    }
+
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+
+    public Category getCategory() {
+        return category;
+    }
+
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    
 }

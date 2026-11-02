@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.shop.ease.Repository.WalletHistoryRepository;
 import com.shop.ease.Repository.WalletRepository;
 import com.shop.ease.Util.WalletTransactionStatus;
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Wallet;
 import com.shop.ease.model.WalletHistory;
 
@@ -24,7 +24,7 @@ public class WalletService {
 
     DecimalFormat df = new DecimalFormat("#.00");
 
-    public void AddToWallet(double totalAmount, UserDtls user) {
+    public void AddToWallet(double totalAmount, MyUserDetails user) {
         Wallet wallet = walletRepository.findByUser(user);
         if (wallet == null) {
             wallet = new Wallet();
@@ -35,7 +35,7 @@ public class WalletService {
         createWalletHistory(totalAmount, WalletTransactionStatus.CREDITED, LocalDateTime.now(), wallet,"refund added");
     }
 
-    public Wallet getWalletByUser(UserDtls user) {
+    public Wallet getWalletByUser(MyUserDetails user) {
         Wallet wallet = walletRepository.findByUser(user);
         if (wallet == null) {
             wallet = new Wallet();
@@ -45,7 +45,7 @@ public class WalletService {
         return wallet;
     }
 
-    public void referalAmount(UserDtls referer, UserDtls userdtls) {
+    public void referalAmount(MyUserDetails referer, MyUserDetails userdtls) {
         Wallet wallet1 = walletRepository.findByUser(referer);
         if (wallet1 == null) {
             wallet1 = new Wallet();

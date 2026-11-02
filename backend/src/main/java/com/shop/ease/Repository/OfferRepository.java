@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.shop.ease.model.Category;
 import com.shop.ease.model.Offer;
+import java.util.List;
+
 
 
 
@@ -13,7 +15,7 @@ import com.shop.ease.model.Offer;
 public interface OfferRepository extends JpaRepository<Offer,Integer> {
 
     
-    public Offer findById(int id);
+    public Offer findByOfferId(int offerId);
     
     public boolean existsByCategory(Category category);
 

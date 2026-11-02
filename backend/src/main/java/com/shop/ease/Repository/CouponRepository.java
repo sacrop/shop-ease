@@ -8,9 +8,9 @@ import com.shop.ease.model.Coupon;
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon,Long>{
 
-    public Coupon findByCode(String code);
+    public Coupon findByCouponCode(String couponCode);
 
-    public boolean existsByCode(String code);
+    public boolean existsByCouponCode(String couponCode);
 
     
 }

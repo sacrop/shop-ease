@@ -27,9 +27,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
 
-@Data
 @Entity
 @SQLDelete(sql = "UPDATE order_table SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedOrderFilter", parameters = @ParamDef(name = "isDeleted", type = boolean.class))
@@ -38,11 +36,11 @@ import lombok.Data;
 public class Order {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
+    private int orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserDtls user;
+    private MyUserDetails user;
 
     @Column(name = "order_date_time")
     private LocalDateTime orderDateTime;
@@ -102,10 +100,72 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order [id=" + id + ", orderDateTime=" + orderDateTime + ", totalAmount=" + totalAmount
+        return "Order [orderId=" + orderId + ", orderDateTime=" + orderDateTime + ", totalAmount=" + totalAmount
                 + ", paymentMethod=" + paymentMethod + ", shippingAddress="
                 + shippingAddress + ", status=" + status + "]";
     }
+    public int getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+    public MyUserDetails getUser() {
+        return user;
+    }
+    public void setUser(MyUserDetails user) {
+        this.user = user;
+    }
+    public LocalDateTime getOrderDateTime() {
+        return orderDateTime;
+    }
+    public void setOrderDateTime(LocalDateTime orderDateTime) {
+        this.orderDateTime = orderDateTime;
+    }
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+    public List<OrderItem> getOrderitem() {
+        return orderitem;
+    }
+    public void setOrderitem(List<OrderItem> orderitem) {
+        this.orderitem = orderitem;
+    }
+    public Address getShippingAddress() {
+        return shippingAddress;
+    }
+    public void setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+    public OrderStatus getStatus() {
+        return status;
+    }
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+    public Boolean getIsCouponUsed() {
+        return IsCouponUsed;
+    }
+    public void setIsCouponUsed(Boolean isCouponUsed) {
+        IsCouponUsed = isCouponUsed;
+    }
+
+    
 
     
 }

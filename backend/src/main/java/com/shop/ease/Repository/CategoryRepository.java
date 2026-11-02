@@ -14,25 +14,25 @@ import com.shop.ease.model.Subcategory;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-  public boolean existsByCatname(String name);
+  public boolean existsBycategoryName(String categoryName);
 
-  public Category findByCatname(String catname);
+  public Category findBycategoryName(String categoryName);
 
   @Query("SELECT C FROM Category C")
   public List<Category> findAllCategory();
 
-  @Query("SELECT s FROM Subcategory s WHERE s.category.catid = :categoryId")
+  @Query("SELECT s FROM Subcategory s WHERE s.category.categoryId = :categoryId")
   List<Subcategory> findSubcategoryByCategoryId(@Param("categoryId") int categoryId);
 
-  @Query("SELECT new map(s.id as id, s.subcatname as subcatname) FROM Subcategory s WHERE s.category.catid = :categoryId")
+  @Query("SELECT new map(s.subcategoryId as id, s.subcategoryName as subcatname) FROM Subcategory s WHERE s.category.categoryId = :categoryId")
   List<Map<String, Object>> findSubcategoryNamesAndIdsByCategoryId(@Param("categoryId") int categoryId);
 
-  @Query("SELECT c.catname from Category c")
+  @Query("SELECT c.categoryName from Category c")
   public List<String> getAllCategoryName();
 
-  public Category findByCatid(int catid);
+  public Category findByCategoryId(int categoryId);
 
-  public boolean existsByCatnameAndDeleted(String catname, boolean deleted);
+  public boolean existsBycategoryNameAndDeleted(String categoryName, boolean deleted);
 
   public List<Category> findByDeletedFalse();
 

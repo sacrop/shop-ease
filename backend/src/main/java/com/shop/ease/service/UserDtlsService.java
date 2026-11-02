@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.UserRepository;
 import com.shop.ease.configuration.CustomUserDetails;
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
+
 
 @Service
 public class UserDtlsService implements UserDetailsService {
@@ -18,7 +19,7 @@ public class UserDtlsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // TODO Auto-generated method stub
-        UserDtls user=userrepo.findByEmail(email);
+        MyUserDetails user=userrepo.findByEmail(email);
 
         if(user!=null){
             return new CustomUserDetails(user);

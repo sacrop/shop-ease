@@ -29,7 +29,7 @@ public class ProductPriceHistoryService {
     public void updatePriceHistory(Product product) {
         ProductPriceHistory priceHistory=priceHistoryRepository.findByProduct(product);
         priceHistory.setProduct(product);
-        priceHistory.setOriginalPrice(product.getPrice());
+        priceHistory.setProductOriginalPrice(product.getProductPrice());
         priceHistory.setChangeDate(LocalDateTime.now());
         priceHistoryRepository.save(priceHistory);
     }

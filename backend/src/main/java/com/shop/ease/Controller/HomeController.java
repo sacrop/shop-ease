@@ -24,10 +24,10 @@ import com.shop.ease.dto.UserDto;
 import com.shop.ease.helper.Message;
 import com.shop.ease.helper.MycustomException;
 import com.shop.ease.model.Category;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
 import com.shop.ease.model.ProductPriceHistory;
-import com.shop.ease.model.UserDtls;
-import com.shop.ease.service.Catservice;
+import com.shop.ease.service.CategoryService;
 import com.shop.ease.service.ProductPriceHistoryService;
 import com.shop.ease.service.ProductService;
 import com.shop.ease.service.ReferalService;
@@ -69,7 +69,7 @@ public class HomeController {
     private WalletService walletService;
 
     @Autowired
-    private Catservice catservice;
+    private CategoryService catservice;
 
     @Autowired
     private ProductPriceHistoryService productPriceHistoryService;
@@ -109,7 +109,7 @@ public class HomeController {
     public String successReset(Principal principal, @RequestParam("currentPassword") String currentPassword,
             @RequestParam("newPassword") String newPassword, @RequestParam("confirmPassword") String confirmPassword,
             HttpSession session, Model model, @RequestParam("email") String email) {
-        UserDtls user = userService.getUserByMail(email);
+        MyUserDetails user = userService.getUserByMail(email);
         try {
             model.addAttribute("pageTitle", "Profile page");
             Boolean equality = confirmPassword.equals(newPassword);
@@ -174,14 +174,14 @@ public class HomeController {
                         throw new Exception("referal code is invalid");
                 }
 
-                UserDtls userdtls = service.creaUser(service.convertUserDtoUserDtls(user));
+                MyUserDetails userdtls = service.creaUser(service.convertUserDtoUserDtls(user));
                 if (userdtls != null && agreement) {
                     session.setAttribute("email", user.getEmail());
-                    session.setAttribute("phoneNumber", user.getPhonenumber());
+                    session.setAttribute("phoneNumber", user.getPhoneNumber());
                     session.setAttribute("message", new Message("successfull registration !!", "alert-success"));
                     if (!referalcode.isEmpty()) {
                         Boolean refer = referalService.UseRefferalByCode(referalcode);
-                        UserDtls referer = referalService.getUserBycode(referalcode);
+                        MyUserDetails referer = referalService.getUserBycode(referalcode);
                         if (!refer) {
                             throw new Exception("referal code is expired");
                         }
@@ -204,7 +204,7 @@ public class HomeController {
     @GetMapping("/otpserve")
     public String otpservice(HttpSession session, Model model) {
 
-        UserDtls users = userRepo.findByEmail((String) session.getAttribute("email"));
+        MyUserDetails users = userService.getUserByMail((String) session.getAttribute("email"));
         session.setAttribute("users", users);
         String phoneNumber = "+91" + "8921428919";
         int otp = 1000 + randotp.nextInt(9000);
@@ -218,9 +218,9 @@ public class HomeController {
     public String otpverify(@RequestParam("otp") String otp, HttpSession session) {
 
         if (savedotp.equals(otp)) {
-            UserDtls user = (UserDtls) session.getAttribute("users");
+            MyUserDetails user = (MyUserDetails) session.getAttribute("users");
             user.setOtpverified(true);
-            userRepo.save(user);
+            userService.saveUser(user);
             session.setAttribute("message", new Message("otp verification successfull", "alert-success"));
             return "otpverified";
 

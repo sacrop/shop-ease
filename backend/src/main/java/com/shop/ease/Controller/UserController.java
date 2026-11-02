@@ -49,6 +49,7 @@ import com.shop.ease.model.CartItem;
 import com.shop.ease.model.Category;
 import com.shop.ease.model.Country;
 import com.shop.ease.model.Coupon;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Offer;
 import com.shop.ease.model.Order;
 import com.shop.ease.model.OrderItem;
@@ -58,11 +59,10 @@ import com.shop.ease.model.ProductOffer;
 import com.shop.ease.model.ProductPriceHistory;
 import com.shop.ease.model.Refferal;
 import com.shop.ease.model.Review;
-import com.shop.ease.model.UserDtls;
 import com.shop.ease.model.Wallet;
 import com.shop.ease.model.WalletHistory;
 import com.shop.ease.service.AddressService;
-import com.shop.ease.service.Catservice;
+import com.shop.ease.service.CategoryService;
 import com.shop.ease.service.CouponService;
 import com.shop.ease.service.OfferService;
 import com.shop.ease.service.OrderService;
@@ -103,7 +103,7 @@ public class UserController {
   private PaymentService paymentService;
 
   @Autowired
-  private Catservice catservice;
+  private CategoryService catservice;
 
   @Autowired
   private CouponService couponService;
@@ -141,14 +141,14 @@ public class UserController {
   @ModelAttribute
   public void Userdetails(Model m, Principal p) {
     String email = p.getName();
-    UserDtls user = userService.getUserByMail(email);
+    MyUserDetails user = userService.getUserByMail(email);
     m.addAttribute("user", user);
   }
 
   @GetMapping("/productdescription/{id}")
   public String productdescription(@PathVariable("id") Long id, Model model, Principal principal) {
 
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     Product product = productService.getproductbyid(id);
     model.addAttribute("products", product);
     ProductPriceHistory productPriceHistory = productPriceHistoryService.getOriginalPriceOfProduct(product);
@@ -164,7 +164,7 @@ public class UserController {
     model.addAttribute("review", reviews);
     model.addAttribute("canOrder", orderService.userProductDelivered(user, product));
     model.addAttribute("revRate", reviewService.getAvgRating(product));
-    model.addAttribute("pageTitle", product.getPname());
+    model.addAttribute("pageTitle", product.getProductName());
     return "productDescription";
   }
 
@@ -175,12 +175,12 @@ public class UserController {
     Product product = productService.getproductbyid(id);
     int stock = product.getStockQuantity() - quantity;
     String email = principal.getName();
-    UserDtls user = userService.getUserByMail(email);
+    MyUserDetails user = userService.getUserByMail(email);
     m.addAttribute("stock", stock);
     m.addAttribute("user", user);
     m.addAttribute("product", product);
     m.addAttribute("quantity", quantity);
-    double updatedPrice = Double.parseDouble(df.format(product.getPrice() * quantity + 40));
+    double updatedPrice = Double.parseDouble(df.format(product.getProductPrice() * quantity + 40));
     m.addAttribute("totalprice", updatedPrice);
     m.addAttribute("deliverycharge", 40.0);
     m.addAttribute("wallets", walletService.getWalletByUser(user));
@@ -205,7 +205,7 @@ public class UserController {
 
     String username = principal.getName();
     double prices = 0.0;
-    UserDtls user = userService.getUserByMail(username);
+    MyUserDetails user = userService.getUserByMail(username);
     if (!wallet.isEmpty()) {
       Wallet wallets = walletService.getWalletByUser(user);
       if (payment.equals("walletpayment")) {
@@ -232,7 +232,7 @@ public class UserController {
       @RequestParam("cartprice") Double price, Principal principal,
       @RequestParam(value = "useWallet", defaultValue = "") String wallet) {
     String userName = principal.getName();
-    UserDtls user = userService.getUserByMail(userName);
+    MyUserDetails user = userService.getUserByMail(userName);
     double prices = 0.0;
     if (!wallet.isEmpty()) {
       Wallet wallets = walletService.getWalletByUser(user);
@@ -256,7 +256,7 @@ public class UserController {
   @PostMapping("/checkoutall")
   public String getallcartItemsCheckout(Model model, Principal principal) {
     String userName = principal.getName();
-    UserDtls user = userService.getUserByMail(userName);
+    MyUserDetails user = userService.getUserByMail(userName);
     Cart cart = shoppingCartService.getCartByUserId(user.getId());
     List<CartItem> cartitemslist = cart.getItems();
     model.addAttribute("cartItems", cartitemslist);
@@ -275,7 +275,7 @@ public class UserController {
   @GetMapping("/userprofile")
   public String userProfile(Model model, Principal principal) {
     model.addAttribute("pageTitle", "Profile page");
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     model.addAttribute("users", user);
     return "user/userprofile";
   }
@@ -284,8 +284,8 @@ public class UserController {
   public String updateProfile(Principal principal, @RequestParam("name") String usename,
       @RequestParam("email") String email, @RequestParam("phonenumber") String phonenumber,
       @RequestParam("imagefile") MultipartFile file, HttpSession session, Model model) throws IOException {
-    UserDtls principalUser = userService.getUserByMail(principal.getName());
-    principalUser.setUsename(usename);
+    MyUserDetails principalUser = userService.getUserByMail(principal.getName());
+    principalUser.setUserName(usename);
     model.addAttribute("pageTitle", "Profile page");
     principalUser.setEmail(email);
     principalUser.setPhonenumber(phonenumber);
@@ -307,7 +307,7 @@ public class UserController {
   public String updatePassword(Principal principal, @RequestParam("currentPassword") String currentPassword,
       @RequestParam("newPassword") String newPassword, @RequestParam("confirmPassword") String confirmPassword,
       HttpSession session, Model model) {
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     try {
       model.addAttribute("pageTitle", "Profile page");
       Boolean equality = confirmPassword.equals(newPassword);
@@ -333,7 +333,7 @@ public class UserController {
   @GetMapping("/orders")
   public String getOrders(Model model, Principal principal) {
     String username = principal.getName();
-    UserDtls user = userService.getUserByMail(username);
+    MyUserDetails user = userService.getUserByMail(username);
     List<Order> orders = orderService.getOrderByUser(user);
     model.addAttribute("orders", orders);
     List<OrderItem> orderitems = new ArrayList<>();
@@ -354,7 +354,7 @@ public class UserController {
   public String deleteOrder(@PathVariable("id") int orderId, HttpSession session, Principal principal, Model model) {
     model.addAttribute("pageTitle", "Orders page");
     Order order = orderService.getOrderById(orderId);
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     if ("rayzorpay".equals(order.getPaymentMethod())) {
       walletService.AddToWallet(order.getTotalAmount(), user);
 
@@ -428,7 +428,7 @@ public class UserController {
 
   @GetMapping("/wallet")
   public String getWallet(Model model, Principal principal) {
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     Wallet wallets = walletService.getWalletByUser(user);
     model.addAttribute("pageTitle", "Wallet page");
     model.addAttribute("wallets", wallets);
@@ -521,17 +521,17 @@ public class UserController {
       if (coupon == null) {
         throw new MycustomException("Invalid coupon code");
       }
-      if (coupon.getMinPurchase() > amount) {
+      if (coupon.getMinimumPurchase() > amount) {
         throw new MycustomException("minimum purchase amount is not reached");
       }
-      UserDtls user = userService.getUserByMail(principal.getName());
+      MyUserDetails user = userService.getUserByMail(principal.getName());
       Boolean usage = couponService.checkCouponUsage(user, code);
       if (usage) {
         throw new MycustomException("coupon already used");
       }
       // amount=amount
 
-      if (coupon.getStatus() != CouponStatus.ACTIVE) {
+      if (coupon.getCouponStatus() != CouponStatus.ACTIVE) {
         throw new MycustomException("Coupon is inactive");
       }
       Double discount = coupon.getDiscountPercentage();
@@ -553,7 +553,7 @@ public class UserController {
 
   @PostMapping("/showReferal")
   public String showReferal(Principal principal, Model model) {
-    UserDtls user = userService.getUserByMail(principal.getName());
+    MyUserDetails user = userService.getUserByMail(principal.getName());
     Refferal referal = referalService.findByUser(user);
     if (referal == null) {
       referalService.CreateReferral(user);
@@ -567,7 +567,7 @@ public class UserController {
   @ResponseBody
   public ResponseEntity<String> reviewSubmitted(@RequestBody Map<String, Object> data, Principal principal) {
     try {
-      UserDtls user = userService.getUserByMail(principal.getName());
+      MyUserDetails user = userService.getUserByMail(principal.getName());
       String ratings = (String) data.get("ratings");
       String name = (String) data.get("name");
       String email = (String) data.get("email");

@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.shop.ease.model.Address;
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
 
 import java.util.List;
 
@@ -21,6 +21,6 @@ public interface AddressRepository extends JpaRepository<Address,Long>{
 
     public List<Address> findByDeletedFalse();
 
-    public List<Address> findByUserDtls(UserDtls userDtls);
+    public List<Address> findByUserDtls(MyUserDetails myUserDetails);
     
 }

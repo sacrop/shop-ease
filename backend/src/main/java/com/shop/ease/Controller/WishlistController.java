@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.shop.ease.helper.Message;
 import com.shop.ease.helper.MycustomException;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
-import com.shop.ease.model.UserDtls;
 
 import com.shop.ease.service.UserService;
 import com.shop.ease.service.WishlistService;
@@ -38,14 +38,14 @@ public class WishlistController {
     public void Userdetails(Model m, Principal p) {
 
         String email = p.getName();
-        UserDtls user = userService.getUserByMail(email);
+        MyUserDetails user = userService.getUserByMail(email);
         m.addAttribute("user", user);
 
     }
 
     @GetMapping("")
     public String getWishlist(Model model, Principal principal) {
-        UserDtls user = userService.getUserByMail(principal.getName());
+        MyUserDetails user = userService.getUserByMail(principal.getName());
         List<Product> productList = wishlistService.getAllProductFromWishList(user);
         model.addAttribute("productList", productList);
         return "user/wishlist";
@@ -55,7 +55,7 @@ public class WishlistController {
     @GetMapping("/add/{id}")
     public String addToWishList(@PathVariable("id") Long id, Principal principal, HttpSession session) {
         try {
-            UserDtls user = userService.getUserByMail(principal.getName());
+            MyUserDetails user = userService.getUserByMail(principal.getName());
             wishlistService.addToWishList(user, id);
             session.setAttribute("message", new Message("product added to wishlist", "alert-success"));
             return "redirect:/user/";
@@ -67,7 +67,7 @@ public class WishlistController {
 
     @GetMapping("/remove/{id}")
     public String removefromWishlist(@PathVariable("id") Long id, Principal principal) {
-        UserDtls user = userService.getUserByMail(principal.getName());
+        MyUserDetails user = userService.getUserByMail(principal.getName());
         wishlistService.removeProduct(user, id);
         return "redirect:/user/wishlist";
     }

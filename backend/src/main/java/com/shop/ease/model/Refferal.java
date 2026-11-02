@@ -6,9 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import lombok.Data;
 
-@Data
+
 @Entity
 public class Refferal {
 
@@ -20,10 +19,52 @@ public class Refferal {
     private String referalCode;
 
     @OneToOne
-    private UserDtls user;
+    private MyUserDetails user;
 
 
     private int referalCount=0;
+
+
+    public int getId() {
+        return id;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public String getReferalCode() {
+        return referalCode;
+    }
+
+
+    public void setReferalCode(String referalCode) {
+        this.referalCode = referalCode;
+    }
+
+
+    public MyUserDetails getUser() {
+        return user;
+    }
+
+
+    public void setUser(MyUserDetails user) {
+        this.user = user;
+    }
+
+
+    public int getReferalCount() {
+        return referalCount;
+    }
+
+
+    public void setReferalCount(int referalCount) {
+        this.referalCount = referalCount;
+    }
+
+    
 
     
     

@@ -13,7 +13,7 @@ import com.shop.ease.Repository.CountryRepository;
 import com.shop.ease.dto.AddressDto;
 import com.shop.ease.model.Address;
 import com.shop.ease.model.Country;
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
 
 import jakarta.persistence.EntityManager;
 
@@ -84,7 +84,7 @@ public class AddressService {
         addressRepository.save(address);
     }
     
-    public  void uncheckDefaultAddress(UserDtls user) {
+    public  void uncheckDefaultAddress(MyUserDetails user) {
 
         for(Address address:addressRepository.findByUserDtls(user)){
             if(address.getDefaultAddress()){

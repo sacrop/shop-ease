@@ -8,18 +8,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
 
-@Data
 @Entity
 @Table
 public class ProductOffer {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int productOfferId;
     
-    private double discountOffer;
+    private double productOfferDiscount;
 
     @OneToOne
     private Product product;
@@ -27,5 +25,47 @@ public class ProductOffer {
 
     private LocalDateTime localDateTime;
 
-    private String offerDescription;
+    private String productOfferDescription;
+
+    public int getProductOfferId() {
+        return productOfferId;
+    }
+
+    public void setProductOfferId(int productOfferId) {
+        this.productOfferId = productOfferId;
+    }
+
+    public double getProductOfferDiscount() {
+        return productOfferDiscount;
+    }
+
+    public void setProductOfferDiscount(double productOfferDiscount) {
+        this.productOfferDiscount = productOfferDiscount;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public String getProductOfferDescription() {
+        return productOfferDescription;
+    }
+
+    public void setProductOfferDescription(String productOfferDescription) {
+        this.productOfferDescription = productOfferDescription;
+    }
+
+    
 }

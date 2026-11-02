@@ -12,9 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name="cart_item")
 public class CartItem {
@@ -25,7 +23,7 @@ public class CartItem {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserDtls userDtls;
+    private MyUserDetails userDtls;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -38,6 +36,48 @@ public class CartItem {
     @Min(1)
     @Max(5)
     private int quantity;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public MyUserDetails getUserDtls() {
+        return userDtls;
+    }
+
+    public void setUserDtls(MyUserDetails userDtls) {
+        this.userDtls = userDtls;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    
 
     
     

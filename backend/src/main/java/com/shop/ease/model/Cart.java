@@ -11,9 +11,8 @@ import jakarta.persistence.JoinColumn;
 
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.Data;
 
-@Data
+
 @Entity
 public class Cart {
     
@@ -26,14 +25,14 @@ public class Cart {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserDtls userDtls;
+    private MyUserDetails userDtls;
 
     private double totalamount;
 
     public double getTotalamount() {
         totalamount=0.0;
         for(CartItem item:items){
-            totalamount+=(item.getProduct().getPrice()*item.getQuantity());
+            totalamount+=(item.getProduct().getProductPrice()*item.getQuantity());
             
         }
         return totalamount;
@@ -43,6 +42,36 @@ public class Cart {
     public String toString() {
         return "Cart [id=" + id + ", totalamount=" + totalamount + "]";
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<CartItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CartItem> items) {
+        this.items = items;
+    }
+
+    public MyUserDetails getUserDtls() {
+        return userDtls;
+    }
+
+    public void setUserDtls(MyUserDetails userDtls) {
+        this.userDtls = userDtls;
+    }
+
+    public void setTotalamount(double totalamount) {
+        this.totalamount = totalamount;
+    }
+
+    
 
    
 }

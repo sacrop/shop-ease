@@ -5,11 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.shop.ease.model.Coupon;
 import com.shop.ease.model.CouponUsage;
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
+
 @Repository
 public interface CouponUsageRepository extends JpaRepository<CouponUsage,Long> {
 
-    public CouponUsage findByUserAndCoupon(UserDtls user,Coupon coupon);
-    public boolean existsByUserAndCoupon(UserDtls user, Coupon coupon);
-     
+    public CouponUsage findByMyUserDetailsAndCoupon(MyUserDetails user, Coupon coupon);
+    public boolean existsByMyUserDetailsAndCoupon(MyUserDetails user, Coupon coupon);
+
 }

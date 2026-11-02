@@ -35,7 +35,7 @@ public class ProductService {
     }
 
     public List<Product> getNotDeletedProducts() {
-        return prorepo.findByDeletedFalse();
+        return prorepo.findByProductDeletedFalse();
     }
 
     public void createproduct(Product product) {
@@ -48,7 +48,7 @@ public class ProductService {
     }
 
     public Product getproductbyid(long l) {
-        return prorepo.findById(l);
+        return prorepo.findByProductId(l);
     }
 
     public void saveproduct(Product product) {
@@ -56,11 +56,11 @@ public class ProductService {
     }
 
     public List<Product> getProductsBypname(String pname) {
-        return prorepo.findByPname(pname);
+        return prorepo.findByProductName(pname);
     }
 
     public int getproductcount() {
-        return prorepo.countproduct();
+        return prorepo.countProducts();
     }
 
     public Product convertProductDtoProduct(ProductDto productDto) {
@@ -83,7 +83,7 @@ public class ProductService {
     public void restoredeleted() {
         List<Product> pro = this.getdeletedProduct();
         for (Product prod : pro) {
-            prod.setDeleted(false);
+            prod.setProductDeleted(false);
             prorepo.save(prod);
         }
     }

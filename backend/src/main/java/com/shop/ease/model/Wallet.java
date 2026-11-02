@@ -11,10 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+
 
 @Entity
-@Data
 @Table(name = "wallet")
 public class Wallet {
     
@@ -23,8 +22,8 @@ public class Wallet {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user")
-    private UserDtls user;
+    @JoinColumn(name = "user_id")
+    private MyUserDetails user;
 
     private Double currentBalance=0.0;
 
@@ -39,5 +38,39 @@ public class Wallet {
     public String toString() {
         return "Wallet [id=" + id + ", user=" + user + ", currentBalance=" + currentBalance + "]";
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public MyUserDetails getUser() {
+        return user;
+    }
+
+    public void setUser(MyUserDetails user) {
+        this.user = user;
+    }
+
+    public Double getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(Double currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
+    public List<WalletHistory> getWalletHistory() {
+        return WalletHistory;
+    }
+
+    public void setWalletHistory(List<WalletHistory> walletHistory) {
+        WalletHistory = walletHistory;
+    }
+
+    
   
 }

@@ -39,12 +39,12 @@ public class OfferService {
             double original = getHistoryPrice(product);
             double discountOffer = getDiscountOfferForProduct(product, discount);
             double discountedPrice = calculateDiscountedPrice(original, discountOffer);
-            product.setPrice(discountedPrice);
+            product.setProductPrice(discountedPrice);
             productRepository.save(product);
         }
         Offer offer = new Offer();
         offer.setCategory(category);
-        offer.setDiscount(discount);
+        offer.setOfferDiscount(discount);
         offer.setOfferDescription(description);
         offerRepository.save(offer);
     }
@@ -52,15 +52,15 @@ public class OfferService {
     private double getHistoryPrice(Product product) {
         if (priceHistoryRepository.existsByProduct(product)) {
             ProductPriceHistory priceHistory = priceHistoryRepository.findByProduct(product);
-            return priceHistory.getOriginalPrice();
+            return priceHistory.getProductOriginalPrice();
 
         } else {
             ProductPriceHistory priceHistory = new ProductPriceHistory();
             priceHistory.setProduct(product);
             priceHistory.setChangeDate(LocalDateTime.now());
-            priceHistory.setOriginalPrice(product.getPrice());
+            priceHistory.setProductOriginalPrice(product.getProductPrice());
             priceHistoryRepository.save(priceHistory);
-            return priceHistory.getOriginalPrice();
+            return priceHistory.getProductOriginalPrice();
         }
 
     }
@@ -73,7 +73,7 @@ public class OfferService {
     private double getDiscountOfferForProduct(Product product, double discount) {
         if (productOfferRepository.existsByProduct(product)) {
             ProductOffer productOffer = productOfferRepository.findByProduct(product);
-            return productOffer.getDiscountOffer() + discount;
+            return productOffer.getProductOfferDiscount() + discount;
         } else {
             return discount;
         }
@@ -84,15 +84,15 @@ public class OfferService {
     }
 
     public void deleteOffer(int id) {
-        Offer offer = offerRepository.findById(id);
+        Offer offer = offerRepository.findByOfferId(id);
         Category category = offer.getCategory();
         for (Product pro : category.getProduct()) {
-            if (offer.getDiscount() == getDiscountOfferForProduct(pro, offer.getDiscount())) {
-                pro.setPrice(getHistoryPrice(pro));
+            if (offer.getOfferDiscount() == getDiscountOfferForProduct(pro, offer.getOfferDiscount())) {
+                pro.setProductPrice(getHistoryPrice(pro));
             } else {
-                double balanceDiscount = getDiscountOfferForProduct(pro, offer.getDiscount()) - offer.getDiscount();
+                double balanceDiscount = getDiscountOfferForProduct(pro, offer.getOfferDiscount()) - offer.getOfferDiscount();
                 double price = calculateDiscountedPrice(getHistoryPrice(pro), balanceDiscount);
-                pro.setPrice(price);
+                pro.setProductPrice(price);
             }
             productRepository.save(pro);
         }
@@ -109,7 +109,7 @@ public class OfferService {
 
     public Offer findOffer(int id) {
 
-        return offerRepository.findById(id);
+        return offerRepository.findByOfferId(id);
     }
 
     public void saveOffer(Offer offer) {
@@ -124,33 +124,33 @@ public class OfferService {
         Boolean offerapplied = offerRepository.existsByCategory(product.getCategory());
         if (!offerapplied) {
             double discountedPrice = calculateDiscountedPrice(original, discount);
-            product.setPrice(discountedPrice);
+            product.setProductPrice(discountedPrice);
             productRepository.save(product);
             // double discountOffer = getDiscountOfferForProduct(product, discount);
         } else {
             Offer offer = offerRepository.findByCategory(product.getCategory());
-            double discountedPrice = calculateDiscountedPrice(original, offer.getDiscount() + discount);
-            product.setPrice(discountedPrice);
+            double discountedPrice = calculateDiscountedPrice(original, offer.getOfferDiscount() + discount);
+            product.setProductPrice(discountedPrice);
             productRepository.save(product);
         }
         ProductOffer prooffer = new ProductOffer();
-        prooffer.setDiscountOffer(discount);
+        prooffer.setProductOfferDiscount(discount);
         prooffer.setLocalDateTime(LocalDateTime.now());
-        prooffer.setOfferDescription(description);
+        prooffer.setProductOfferDescription(description);
         prooffer.setProduct(product);
         productOfferRepository.save(prooffer);
     }
 
     public void deleteProductOffer(int id) {
-        ProductOffer offer = productOfferRepository.findById(id);
+        ProductOffer offer = productOfferRepository.findByProductOfferId(id);
         Product product = offer.getProduct();
         double price = getHistoryPrice(product);
         if (offerRepository.existsByCategory(product.getCategory())) {
             Offer off = offerRepository.findByCategory(product.getCategory());
-            double discountedprice = calculateDiscountedPrice(price, off.getDiscount());
-            product.setPrice(discountedprice);
+            double discountedprice = calculateDiscountedPrice(price, off.getOfferDiscount());
+            product.setProductPrice(discountedprice);
         } else {
-            product.setPrice(price);
+            product.setProductPrice(price);
         }
         productRepository.save(product);
         productOfferRepository.delete(offer);
@@ -176,17 +176,17 @@ public class OfferService {
         Boolean offerapplied = offerRepository.existsByCategory(product.getCategory());
         if (!offerapplied) {
             double discountedPrice = calculateDiscountedPrice(original, discount);
-            product.setPrice(discountedPrice);
+            product.setProductPrice(discountedPrice);
             productRepository.save(product);
             // double discountOffer = getDiscountOfferForProduct(product, discount);
         } else {
             Offer offer = offerRepository.findByCategory(product.getCategory());
-            double discountedPrice = calculateDiscountedPrice(original, offer.getDiscount() + discount);
-            product.setPrice(discountedPrice);
+            double discountedPrice = calculateDiscountedPrice(original, offer.getOfferDiscount() + discount);
+            product.setProductPrice(discountedPrice);
             productRepository.save(product);
         }
-        productOffer.setDiscountOffer(discount);
-        productOffer.setOfferDescription(description);
+        productOffer.setProductOfferDiscount(discount);
+        productOffer.setProductOfferDescription(description);
         productOffer.setProduct(product);
         productOffer.setLocalDateTime(LocalDateTime.now());
         productOfferRepository.save(productOffer);

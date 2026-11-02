@@ -24,7 +24,7 @@ import com.shop.ease.model.Subcategory;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 @Service
-public class Catservice {
+public class CategoryService {
 
     @Autowired
     private CategoryRepository catrepo;
@@ -51,9 +51,9 @@ public class Catservice {
         return catrepo.findAllCategory();
     }
 
-    public Boolean existsByCatname(String catname) {
+    public Boolean existsBycategoryName(String categoryName) {
     
-            return catrepo.existsByCatname(catname);
+            return catrepo.existsBycategoryName(categoryName);
         
     }  
 
@@ -72,11 +72,11 @@ public class Catservice {
     
 
     public Boolean existsBySubcatname(String subcatname){
-        return subcatrepo.existsBySubcatname(subcatname);
+        return subcatrepo.existsBySubcategoryName(subcatname);
     }
 
     public Category getCategorybyname(String name){
-        return catrepo.findByCatname(name);
+        return catrepo.findBycategoryName(name);
 
     }
 
@@ -85,7 +85,7 @@ public class Catservice {
     }
 
     public Subcategory getSubcategorybyname(String name) {
-        return subcatrepo.findBySubcatname(name);
+        return subcatrepo.findBySubcategoryName(name);
     }
 
     public Category convertCategoryDtotCategory(CategoryDto categoryDto)
@@ -119,7 +119,7 @@ public class Catservice {
     public List<Subcategory> getSubcategoriesByCategoryName(String name) {
         Category category=getCategorybyname(name);
         if(category!=null){
-            int catid=category.getCatid();
+            int catid=category.getCategoryId();
             return getSubcategoriesByCategoryId(catid);
         }
         return getallsubcategory();
@@ -127,16 +127,16 @@ public class Catservice {
 
     //return category based on category id
     public Category getcategoryByid(int catid) {
-        return catrepo.findByCatid(catid);
+        return catrepo.findByCategoryId(catid);
     }
 
     public Subcategory getSubcategoryById(int subcatid) {
-        return subcatrepo.findById(subcatid);
+        return subcatrepo.findBySubcategoryId(subcatid);
     }
 
     @Transactional
     public void deleteCategoryByid(int id) { 
-        // subcatrepo.deleteByCategory(catrepo.findByCatid(id));
+        // subcatrepo.deleteByCategory(catrepo.findByCategoryId(id));
         catrepo.deleteById(id);
     }
 
@@ -144,7 +144,7 @@ public class Catservice {
         catrepo.save(category);
     }
 
-    public Boolean existByCatnameAndSubcatname(String subcatname, String catname) {
-        return subcatrepo.existsBySubcatnameAndCategory_Catname(subcatname, catname);
+    public Boolean existBycategoryNameAndSubcategoryName(String subcatname, String categoryName) {
+        return subcatrepo.existsBySubcategoryNameAndCategory_CategoryName(subcatname, categoryName);
     }
 }

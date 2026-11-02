@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.UserRepository;
 import com.shop.ease.dto.UserDto;
+import com.shop.ease.model.MyUserDetails;
 
 
-import com.shop.ease.model.UserDtls;
 
 @Service
 public class UserService{
@@ -28,8 +28,8 @@ public class UserService{
     private BCryptPasswordEncoder passwordencoder;
     
   
-    public UserDtls creaUser(UserDtls user) {
-        user.setUsename(user.getUsename());
+    public MyUserDetails creaUser(MyUserDetails user) {
+        user.setUserName(user.getUserName());
     
         user.setPassword(passwordencoder.encode(user.getPassword()));
         user.setToken(0);
@@ -45,13 +45,13 @@ public class UserService{
        return userRepo.existsByEmail(email);
     }
 
-    public List<UserDtls> getalluser() {
+    public List<MyUserDetails> getalluser() {
         return userRepo.findAll();
     }
 
 
-    public List<UserDtls> finduser(String usename) {
-       return userRepo.findByUsename(usename);
+    public List<MyUserDetails> finduser(String usename) {
+       return userRepo.findByUserName(usename);
     }
     // @Override
     // public boolean checkUserphoneNumber(String phone_number) {
@@ -60,7 +60,7 @@ public class UserService{
 
 
     public void changelock(int id, Boolean lock) {
-         UserDtls user=userRepo.findById(id);
+         MyUserDetails user=userRepo.findById(id);
          if(lock){
             user.setToken(0);
             userRepo.save(user);
@@ -82,19 +82,19 @@ public class UserService{
       return userRepo.countByRole("ROLE_ADMIN");
    }
 
-   public UserDtls convertUserDtoUserDtls(UserDto userDto){
+   public MyUserDetails convertUserDtoUserDtls(UserDto userDto){
 
-      UserDtls user=new UserDtls();
-      user=modelmapper.map(userDto,UserDtls.class);
+      MyUserDetails user=new MyUserDetails();
+      user=modelmapper.map(userDto,MyUserDetails.class);
       return user;
    }
 
-   public UserDtls getUserByMail(String email){
+   public MyUserDetails getUserByMail(String email){
       return userRepo.findByEmail(email);
    }
 
 
-public void saveUser(UserDtls principalUser) {
+public void saveUser(MyUserDetails principalUser) {
    userRepo.save(principalUser);
 }
     

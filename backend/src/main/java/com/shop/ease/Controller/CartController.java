@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.shop.ease.model.Cart;
 import com.shop.ease.model.CartItem;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
-import com.shop.ease.model.UserDtls;
 import com.shop.ease.service.ProductService;
 import com.shop.ease.service.ShoppingCartService;
 import com.shop.ease.service.UserService;
@@ -43,7 +43,7 @@ public class CartController {
     @ModelAttribute
     public void Userdetails(Model m, Principal p) {
         String email = p.getName();
-        UserDtls user = userService.getUserByMail(email);
+        MyUserDetails user = userService.getUserByMail(email);
         m.addAttribute("user", user);
 
     }
@@ -51,7 +51,7 @@ public class CartController {
     @GetMapping("/cartItems")
     public String cart(Model model, Principal principal) {
         String name = principal.getName();
-        UserDtls user = userService.getUserByMail(name);
+        MyUserDetails user = userService.getUserByMail(name);
         Cart cart = shoppingCartService.getCartByUserId(user.getId());
         if (cart != null) {
             cart.setItems(shoppingCartService.getCartItemByUserDtls(user));
@@ -85,7 +85,7 @@ public class CartController {
         }
         String userName = principal.getName();
 
-        UserDtls user = userService.getUserByMail(userName);
+        MyUserDetails user = userService.getUserByMail(userName);
         if (user == null) {
             return "redirect:/";
         }
@@ -124,7 +124,7 @@ public class CartController {
     @PostMapping("/updatecart")
     public String updatecart(Principal principal, @RequestParam(value = "quantities", defaultValue = "1") int quantity,
             @RequestParam("cartId") Long id) {
-        UserDtls user = userService.getUserByMail(principal.getName());
+        MyUserDetails user = userService.getUserByMail(principal.getName());
         CartItem cartItem = shoppingCartService.getCartItemById(id);
         // int stock=cartItem.getProduct().getStockQuantity()-(int)quantity;
         // Product product=cartItem.getProduct();
@@ -150,7 +150,7 @@ public class CartController {
     public String deletecart(Principal principal, @RequestParam(value = "quantities", defaultValue = "1") int quantity,
             @RequestParam("cartId") Long id) {
 
-        UserDtls user = userService.getUserByMail(principal.getName());
+        MyUserDetails user = userService.getUserByMail(principal.getName());
         shoppingCartService.deleteCartById(id);
         Cart cart = shoppingCartService.getCartByUserId(user.getId());
         cart.setTotalamount(Double.parseDouble(df.format(cart.getTotalamount())));

@@ -9,35 +9,37 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
+
+
 
 
 public class CustomUserDetails implements UserDetails {
 
     @Autowired
-    private UserDtls userDtls;
+    private MyUserDetails myUserDetails;
 
-    public CustomUserDetails(UserDtls userDtls) {
-        this.userDtls = userDtls;
+    public CustomUserDetails(MyUserDetails myUserDetails) {
+        this.myUserDetails = myUserDetails;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         
-        SimpleGrantedAuthority simpleGrantedAuthority=new SimpleGrantedAuthority(userDtls.getRole());
+        SimpleGrantedAuthority simpleGrantedAuthority=new SimpleGrantedAuthority(myUserDetails.getRole());
         return Arrays.asList(simpleGrantedAuthority);
     }
 
     @Override
     public String getPassword() {
        
-        return userDtls.getPassword();
+        return myUserDetails.getPassword();
     }
 
     @Override
     public String getUsername() {
         
-        return userDtls.getEmail();
+        return myUserDetails.getEmail();
     }
 
     @Override
@@ -48,7 +50,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        if(userDtls.getToken()==0){
+        if(myUserDetails.getToken()==0){
             return true;
         }
         else{
@@ -64,7 +66,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if(userDtls.isOtpverified()==true){
+        if(myUserDetails.isOtpverified()==true){
             return true;
            } 
            else{

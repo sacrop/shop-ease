@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.WishlistRepository;
 import com.shop.ease.helper.MycustomException;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
-import com.shop.ease.model.UserDtls;
 import com.shop.ease.model.Wishlist;
 
 @Service
@@ -21,7 +21,7 @@ public class WishlistService {
     @Autowired
     private ProductService productService;
 
-    public void addToWishList(UserDtls user, Long id) throws MycustomException {
+    public void addToWishList(MyUserDetails user, Long id) throws MycustomException {
         Wishlist wishlist = getWishlist(user);
         Product product = productService.getproductbyid(id);
     
@@ -41,11 +41,11 @@ public class WishlistService {
         saveWishList(wishlist);
     }
 
-    public Wishlist getWishlist(UserDtls user){
-            Wishlist wishlist=wishlistRepository.findByUser(user);
+    public Wishlist getWishlist(MyUserDetails user){
+            Wishlist wishlist=wishlistRepository.findByMyUserDetails(user);
             if(wishlist==null){
                 wishlist=new Wishlist();
-                wishlist.setUser(user);
+                wishlist.setMyUserDetails(user);
                 saveWishList(wishlist);
             }
             return wishlist;
@@ -55,7 +55,7 @@ public class WishlistService {
         wishlistRepository.save(wishlist);
     }
 
-    public List<Product> getAllProductFromWishList(UserDtls user){
+    public List<Product> getAllProductFromWishList(MyUserDetails user){
         Wishlist wishlist=getWishlist(user);
 
         List<Product> productlist=wishlist.getProducts();
@@ -63,7 +63,7 @@ public class WishlistService {
         return productlist;
     }
 
-    public void removeProduct(UserDtls user, Long id) {
+    public void removeProduct(MyUserDetails user, Long id) {
        Wishlist wishlist= getWishlist(user);
        Product product=productService.getproductbyid(id);
        wishlist.getProducts().remove(product);

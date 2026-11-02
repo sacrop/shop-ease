@@ -19,20 +19,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 import jakarta.persistence.Table;
-import lombok.Data;
 
-@Data
 @Entity
-@SQLDelete(sql = "UPDATE product_category SET deleted = true WHERE catid = ?")
+@SQLDelete(sql = "UPDATE product_category SET deleted = true WHERE categoryId = ?")
 @FilterDef(name = "deletedCategoryFilter", parameters = @ParamDef(name = "isDeleted", type = boolean.class))
 @Filter(name = "deletedCategoryFilter", condition = "deleted = :isDeleted")
 @Table(name = "product_category")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int catid;
+    private int categoryId;
     @Column(unique = true)
-    private String catname;   
+    private String categoryName;
 
     private String imagePath;
 
@@ -48,10 +46,69 @@ public class Category {
     @Override
     public String toString() {
         return "Category{" +
-                "catid=" + catid +
-                ", catname='" + catname + '\'' +
+                "categoryId=" + categoryId +
+                ", categoryName='" + categoryName + '\'' +
                 '}';
     }
 
     private boolean deleted = Boolean.FALSE;
+
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getIconClass() {
+        return iconClass;
+    }
+
+    public void setIconClass(String iconClass) {
+        this.iconClass = iconClass;
+    }
+
+    public List<Subcategory> getSubcategory() {
+        return subcategory;
+    }
+
+    public void setSubcategory(List<Subcategory> subcategory) {
+        this.subcategory = subcategory;
+    }
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    
 }

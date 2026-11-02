@@ -14,7 +14,7 @@ import com.shop.ease.Util.CouponStatus;
 import com.shop.ease.dto.CouponDto;
 import com.shop.ease.model.Coupon;
 import com.shop.ease.model.CouponUsage;
-import com.shop.ease.model.UserDtls;
+import com.shop.ease.model.MyUserDetails;
 
 @Service
 public class CouponService {
@@ -39,13 +39,13 @@ public class CouponService {
     }
 
     public Coupon findByCouponCode(String code){
-       return couponRepository.findByCode(code);
+       return couponRepository.findByCouponCode(code);
         
     }
 
     public boolean checkExistCode(String code) {
 
-        return couponRepository.existsByCode(code);
+        return couponRepository.existsByCouponCode(code);
     }
 
     public List<Coupon> getAllCoupons() {
@@ -53,19 +53,19 @@ public class CouponService {
         return couponRepository.findAll();
     }
 
-    public Boolean checkCouponUsage(UserDtls user, String code) {
-        Coupon coupon=couponRepository.findByCode(code);
-        Boolean exist=couponUsageRepository.existsByUserAndCoupon(user, coupon);
+    public Boolean checkCouponUsage(MyUserDetails user, String code) {
+        Coupon coupon=couponRepository.findByCouponCode(code);
+        Boolean exist=couponUsageRepository.existsByMyUserDetailsAndCoupon(user, coupon);
         if(exist){
             return true;
         }
         return false;
     }
 
-    public void updateCouponUsage(UserDtls user, Coupon coupon) {
+    public void updateCouponUsage(MyUserDetails user, Coupon coupon) {
         CouponUsage couponUsage=new CouponUsage();
         couponUsage.setCoupon(coupon);
-        couponUsage.setUser(user);
+        couponUsage.setMyUserDetails(user);
         couponUsage.setUsedAt(LocalDateTime.now());
         couponUsage.setStatus(CouponStatus.USED);
         couponUsageRepository.save(couponUsage);
@@ -77,14 +77,14 @@ public class CouponService {
     }
 
     public void updateCouponStatus(){
-        for(Coupon coup:couponRepository.findAll()){
-            LocalDate date=coup.getEndDate();
+        for(Coupon coupon:couponRepository.findAll()){
+            LocalDate date=coupon.getEndDate();
             LocalDate end=LocalDate.now();
             if(date.isBefore(end)){
-                coup.setStatus(CouponStatus.EXPIRED);
+                coupon.setCouponStatus(CouponStatus.EXPIRED);
 
             }
-            couponRepository.save(coup);
+            couponRepository.save(coupon);
         }
     }
     

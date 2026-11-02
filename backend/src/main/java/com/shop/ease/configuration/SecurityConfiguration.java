@@ -17,8 +17,11 @@ import com.shop.ease.service.UserDtlsService;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-  @Autowired
-  public AuthenticationSuccessHandler customSuccessHandler;
+  private final AuthenticationSuccessHandler customSuccessHandler;
+
+  public SecurityConfiguration(AuthenticationSuccessHandler customSuccessHandler) {
+    this.customSuccessHandler = customSuccessHandler;
+  }
 
   @Bean
   public UserDtlsService getuDtlsService() {

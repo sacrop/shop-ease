@@ -9,24 +9,21 @@ import org.springframework.stereotype.Repository;
 
 import com.shop.ease.model.Product;
 
-
-
-
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long>{
     
-    public Product findById(long id);
+    public Product findByProductId(long id);
 
-    public List<Product> findByPname(String pname);
+    public List<Product> findByProductName(String productName);
 
     @Query("SELECT count(*) FROM Product")
-    public int countproduct();
+    public int countProducts();
 
-    public void deleteById(Long id);
+    public void deleteByProductId(Long id);
 
-    public List<Product> findByDeletedFalse();
+    public List<Product> findByProductDeletedFalse();
 
-    public List<Product> getByPname(String pname);
+    public List<Product> getByProductName(String productName);
      
 
     

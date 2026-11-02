@@ -38,8 +38,8 @@ public class SalesController {
             for (Order order : orders) {
                 List<OrderItem> orderItems = order.getOrderItems();
                 for (OrderItem orderItem : orderItems) {
-                    writer.append(orderItem.getProduct().getPname()).append(",");
-                    writer.append(orderItem.getQuantity() + "").append(",");
+                    writer.append(orderItem.getProduct().getProductName()).append(",");
+                    writer.append(orderItem.getOrderQuantity() + "").append(",");
                     writer.append(order.getTotalAmount() + "").append("\n");
                 }
             }

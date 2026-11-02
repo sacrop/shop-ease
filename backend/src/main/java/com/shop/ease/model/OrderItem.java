@@ -12,9 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
 
-@Data
 @SQLDelete(sql = "UPDATE order_item SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedOrderItemFilter", parameters = @ParamDef(name = "isDeleted", type = boolean.class))
 @Filter(name = "deletedOrderItemFilter", condition = "deleted = :isDeleted")
@@ -24,7 +22,7 @@ public class OrderItem
 {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
+    private int orderItemId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -34,8 +32,52 @@ public class OrderItem
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int quantity;
+    private int orderQuantity;
 
-    private boolean deleted = Boolean.FALSE;
+    private boolean orderItemDeleted = Boolean.FALSE;
+
+    public int getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(int orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(int orderQuantity) {
+        this.orderQuantity = orderQuantity;
+    }
+
+    public boolean isOrderItemDeleted() {
+        return orderItemDeleted;
+    }
+
+    public void setOrderItemDeleted(boolean orderItemDeleted) {
+        this.orderItemDeleted = orderItemDeleted;
+    }
+
+
+    
+    
     
 }

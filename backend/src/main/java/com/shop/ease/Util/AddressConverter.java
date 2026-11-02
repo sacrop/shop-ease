@@ -16,7 +16,7 @@ public class AddressConverter {
                 address.getFullName(),
                 address.getMobilePhoneNumber(),
                 address.getPinCode(),
-                address.getBuildingNo(),
+                address.getBuildingNumber(),
                 address.getStreet(),
                 address.getCity(),
                 address.getState(),

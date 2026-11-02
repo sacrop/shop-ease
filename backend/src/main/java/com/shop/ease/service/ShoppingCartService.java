@@ -10,8 +10,9 @@ import com.shop.ease.Repository.CartItemRepository;
 import com.shop.ease.Repository.CartRepository;
 import com.shop.ease.model.Cart;
 import com.shop.ease.model.CartItem;
+import com.shop.ease.model.MyUserDetails;
 import com.shop.ease.model.Product;
-import com.shop.ease.model.UserDtls;
+
 @Service
 public class ShoppingCartService {
 
@@ -32,7 +33,7 @@ public class ShoppingCartService {
     //     return cartItemRepository.findAll();
     // }
 
-    public CartItem findbyUserProduct(UserDtls user, Product product) {
+    public CartItem findbyUserProduct(MyUserDetails user, Product product) {
     
         return cartItemRepository.findByUserDtlsAndProduct(user, product);
     }
@@ -47,7 +48,7 @@ public class ShoppingCartService {
 
     }
 
-    public List<CartItem> getCartItemByUserDtls(UserDtls user){
+    public List<CartItem> getCartItemByUserDtls(MyUserDetails user){
         return cartItemRepository.findByUserDtls(user);
     }
 
@@ -66,7 +67,7 @@ public class ShoppingCartService {
         cartItemRepository.deleteById(cartItem.getId());
     }
 
-    public void clearCart(UserDtls user) {
+    public void clearCart(MyUserDetails user) {
         List<CartItem> cartItems = getCartItemByUserDtls(user);
 
         for (CartItem cartItem : cartItems) {
