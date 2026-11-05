@@ -15,11 +15,13 @@ import com.shop.ease.model.Wishlist;
 @Service
 public class WishlistService {
     
-    @Autowired
-    private WishlistRepository wishlistRepository;
+    private final WishlistRepository wishlistRepository;
+    private final ProductService productService;
 
-    @Autowired
-    private ProductService productService;
+    public WishlistService(WishlistRepository wishlistRepository, ProductService productService) {
+        this.wishlistRepository = wishlistRepository;
+        this.productService = productService;
+    }
 
     public void addToWishList(MyUserDetails user, Long id) throws MycustomException {
         Wishlist wishlist = getWishlist(user);

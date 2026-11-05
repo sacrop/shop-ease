@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.OrderItemRepository;
@@ -26,20 +25,22 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class OrderService {
-    @Autowired
-    private AddressService addressService;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final AddressService addressService;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final ProductService productService;
+    private final ShoppingCartService shoppingCartService;
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ShoppingCartService shoppingCartService;
+    public OrderService(AddressService addressService, OrderRepository orderRepository,
+            OrderItemRepository orderItemRepository, ProductService productService,
+            ShoppingCartService shoppingCartService) {
+        this.addressService = addressService;
+        this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.productService = productService;
+        this.shoppingCartService = shoppingCartService;
+    }
 
     DecimalFormat df = new DecimalFormat("#.00");
 

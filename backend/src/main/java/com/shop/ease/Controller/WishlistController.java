@@ -28,11 +28,13 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/user/wishlist")
 public class WishlistController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final WishlistService wishlistService;
 
-    @Autowired
-    private WishlistService wishlistService;
+    public WishlistController(UserService userService, WishlistService wishlistService) {
+        this.userService = userService;
+        this.wishlistService = wishlistService;
+    }
 
     @ModelAttribute
     public void Userdetails(Model m, Principal p) {
