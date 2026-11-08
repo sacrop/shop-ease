@@ -19,14 +19,19 @@ import com.shop.ease.model.MyUserDetails;
 @Service
 public class CouponService {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+    private final CouponRepository couponRepository;
+    private final CouponUsageRepository couponUsageRepository;
 
-    @Autowired
-    private CouponRepository couponRepository;
-
-    @Autowired 
-    private CouponUsageRepository couponUsageRepository;
+    public CouponService(
+        ModelMapper modelMapper,
+        CouponRepository couponRepository,
+        CouponUsageRepository couponUsageRepository
+    ) {
+        this.modelMapper = modelMapper;
+        this.couponRepository = couponRepository;
+        this.couponUsageRepository = couponUsageRepository;
+    }
 
     public Coupon convertCouponDto(CouponDto couponDto){
         Coupon coupon=new Coupon();

@@ -6,7 +6,6 @@ import java.util.Map;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.CategoryRepository;
@@ -26,34 +25,39 @@ import jakarta.transaction.Transactional;
 @Service
 public class CategoryService {
 
-    @Autowired
-    private CategoryRepository catrepo;
-
-    @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private SubcategoryRepository subcatrepo;
-
-    public void createcat(Category cat) {
-        catrepo.save(cat);
+    private final CategoryRepository categoryRepository;
+    private final EntityManager entityManager;
+    private final ModelMapper modelMapper;
+    private final SubcategoryRepository subcategoryRepository;
+    
+    public CategoryService(
+        CategoryRepository categoryRepository,
+        EntityManager entityManager,
+        ModelMapper modelMapper,
+        SubcategoryRepository subcategoryRepository
+    ) {
+        this.categoryRepository = categoryRepository;
+        this.entityManager = entityManager;
+        this.modelMapper = modelMapper;
+        this.subcategoryRepository = subcategoryRepository;
     }
 
-    public void createsubcat(Subcategory subcat) {
-        subcatrepo.save(subcat);
+    public void createcat(Category category) {
+        categoryRepository.save(category);
+    }
+
+    public void createsubcat(Subcategory subcategory) {
+        subcategoryRepository.save(subcategory);
     }
 
     public List<Category> getallcategory()
     {
-        return catrepo.findAllCategory();
+        return categoryRepository.findAllCategory();
     }
 
-    public Boolean existsBycategoryName(String categoryName) {
+    public Boolean existsByCategoryName(String categoryName) {
     
-            return catrepo.existsBycategoryName(categoryName);
+        return categoryRepository.existsBycategoryName(categoryName);
         
     }  
 
@@ -61,38 +65,37 @@ public class CategoryService {
         Session session=entityManager.unwrap(Session.class);
         Filter filter=session.enableFilter("deletedCategoryFilter");
         filter.setParameter("isDeleted", isDeleted);
-        List<Category> cat=catrepo.findAll();
+        List<Category> category=categoryRepository.findAll();
         session.disableFilter("deletedCategoryFilter");
-        return cat ;
+        return category ;
     }
 
     public List<Category> getNotdeletedCategories(){
-        return catrepo.findByDeletedFalse();
+        return categoryRepository.findByDeletedFalse();
     }
     
 
-    public Boolean existsBySubcatname(String subcatname){
-        return subcatrepo.existsBySubcategoryName(subcatname);
+    public Boolean existsBySubcatname(String subcategoryName) {
+        return subcategoryRepository.existsBySubcategoryName(subcategoryName);
     }
 
-    public Category getCategorybyname(String name){
-        return catrepo.findBycategoryName(name);
-
+    public Category getCategoryByName(String categoryName) {
+        return categoryRepository.findBycategoryName(categoryName);
     }
 
     public List<Subcategory> getallsubcategory() {
-        return subcatrepo.findAll();
+        return subcategoryRepository.findAll();
     }
 
-    public Subcategory getSubcategorybyname(String name) {
-        return subcatrepo.findBySubcategoryName(name);
+    public Subcategory getSubcategoryByName(String subcategoryName) {
+        return subcategoryRepository.findBySubcategoryName(subcategoryName);
     }
 
-    public Category convertCategoryDtotCategory(CategoryDto categoryDto)
+    public Category convertCategoryDtoToCategory(CategoryDto categoryDto)
     {
         Category category=new Category();
-     category=modelMapper.map(categoryDto,Category.class);
-     return category;
+        category=modelMapper.map(categoryDto,Category.class);
+        return category;
     }
     
     public Subcategory convertSubcategoryDtoSubcategory(SubcategoryDto subcategoryDto){
@@ -103,21 +106,21 @@ public class CategoryService {
 
     public List<Map<String, Object>> getSubcategoryNamesIdsByCategoryId(int categoryId)
     {
-        return catrepo.findSubcategoryNamesAndIdsByCategoryId(categoryId);
+        return categoryRepository.findSubcategoryNamesAndIdsByCategoryId(categoryId);
     }
 
      public List<Subcategory> getSubcategoriesByCategoryId(int categoryId)
     {
-        return catrepo.findSubcategoryByCategoryId(categoryId);
+        return categoryRepository.findSubcategoryByCategoryId(categoryId);
     }
 
     public List<String> getAllCategoryNames()
     {
-        return catrepo.getAllCategoryName();
+        return categoryRepository.getAllCategoryName();
     }
 
-    public List<Subcategory> getSubcategoriesByCategoryName(String name) {
-        Category category=getCategorybyname(name);
+    public List<Subcategory> getSubcategoriesByCategoryName(String categoryName) {
+        Category category=getCategoryByName(categoryName);
         if(category!=null){
             int catid=category.getCategoryId();
             return getSubcategoriesByCategoryId(catid);
@@ -126,25 +129,25 @@ public class CategoryService {
     }
 
     //return category based on category id
-    public Category getcategoryByid(int catid) {
-        return catrepo.findByCategoryId(catid);
+    public Category getCategoryById(int categoryId) {
+        return categoryRepository.findByCategoryId(categoryId);
     }
 
-    public Subcategory getSubcategoryById(int subcatid) {
-        return subcatrepo.findBySubcategoryId(subcatid);
+    public Subcategory getSubcategoryById(int subcategoryId) {
+        return subcategoryRepository.findBySubcategoryId(subcategoryId);
     }
 
     @Transactional
     public void deleteCategoryByid(int id) { 
         // subcatrepo.deleteByCategory(catrepo.findByCategoryId(id));
-        catrepo.deleteById(id);
+        categoryRepository.deleteById(id);
     }
 
     public void save(Category category) {
-        catrepo.save(category);
+        categoryRepository.save(category);
     }
 
-    public Boolean existBycategoryNameAndSubcategoryName(String subcatname, String categoryName) {
-        return subcatrepo.existsBySubcategoryNameAndCategory_CategoryName(subcatname, categoryName);
+    public Boolean existBycategoryNameAndSubcategoryName(String subcategoryName, String categoryName) {
+        return subcategoryRepository.existsBySubcategoryNameAndCategory_CategoryName(subcategoryName, categoryName);
     }
 }

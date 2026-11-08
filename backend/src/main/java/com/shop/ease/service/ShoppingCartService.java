@@ -2,7 +2,6 @@ package com.shop.ease.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -16,14 +15,16 @@ import com.shop.ease.model.Product;
 @Service
 public class ShoppingCartService {
 
-    
-    @Autowired
-    private CartItemRepository cartItemRepository;
+    private final CartItemRepository cartItemRepository;
+    private final CartRepository cartRepository;
 
-    @Autowired 
-    private CartRepository cartRepository;
-
-    
+    public ShoppingCartService(
+        CartItemRepository cartItemRepository,
+        CartRepository cartRepository
+    ) {
+        this.cartItemRepository = cartItemRepository;
+        this.cartRepository = cartRepository;
+    }
 
     public boolean isProductExist(Product product){
         return cartItemRepository.existsByProduct(product);

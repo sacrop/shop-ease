@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.AddressRepository;
@@ -20,17 +19,23 @@ import jakarta.persistence.EntityManager;
 
 @Service
 public class AddressService {
-    @Autowired
-    private AddressRepository addressRepository;
 
-    @Autowired
-    private CountryRepository countryRepository;
+    private final AddressRepository addressRepository;
+    private final CountryRepository countryRepository;
+    private final ModelMapper modelMapper;
+    private final EntityManager entityManager;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private EntityManager entityManager;
+    public AddressService(
+        AddressRepository addressRepository,
+        CountryRepository countryRepository,
+        ModelMapper modelMapper,
+        EntityManager entityManager
+    ) {
+        this.addressRepository = addressRepository;
+        this.countryRepository = countryRepository;
+        this.modelMapper = modelMapper;
+        this.entityManager = entityManager;
+    }
 
     public List<Country> getAllCountry() {
         return countryRepository.findAll();

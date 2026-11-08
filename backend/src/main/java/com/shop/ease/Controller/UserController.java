@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -81,47 +80,52 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class UserController {
 
-  @Autowired
-  private UserService userService;
+  private final UserService userService;
+  private final ProductService productService;
+  private final AddressService addressService;
+  private final ShoppingCartService shoppingCartService;
+  private final OrderService orderService;
+  private final PasswordEncoder encoder;
+  private final PaymentService paymentService;
+  private final CategoryService categoryService;
+  private final CouponService couponService;
+  private final ReviewService reviewService;
+  private final ProductPriceHistoryService productPriceHistoryService;
+  private final WalletService walletService;
+  private final ReferalService referalService;
+  private final OfferService offerService;
 
-  @Autowired
-  private ProductService productService;
-
-  @Autowired
-  private AddressService addressService;
-
-  @Autowired
-  private ShoppingCartService shoppingCartService;
-
-  @Autowired
-  private OrderService orderService;
-
-  @Autowired
-  private PasswordEncoder encoder;
-
-  @Autowired
-  private PaymentService paymentService;
-
-  @Autowired
-  private CategoryService catservice;
-
-  @Autowired
-  private CouponService couponService;
-
-  @Autowired
-  private ReviewService reviewService;
-
-  @Autowired
-  private ProductPriceHistoryService productPriceHistoryService;
-
-  @Autowired
-  private WalletService walletService;
-
-  @Autowired
-  private ReferalService referalService;
-
-  @Autowired
-  private OfferService offerService;
+  public UserController(
+    UserService userService,
+    ProductService productService,
+    AddressService addressService,
+    ShoppingCartService shoppingCartService,
+    OrderService orderService,
+    PasswordEncoder encoder,
+    PaymentService paymentService,
+    CategoryService categoryService,
+    CouponService couponService,
+    ReviewService reviewService,
+    ProductPriceHistoryService productPriceHistoryService,
+    WalletService walletService,
+    ReferalService referalService,
+    OfferService offerService
+  ) {
+    this.userService = userService;
+    this.productService = productService;
+    this.addressService = addressService;
+    this.shoppingCartService = shoppingCartService;
+    this.orderService = orderService;
+    this.encoder = encoder;
+    this.paymentService = paymentService;
+    this.categoryService = categoryService;
+    this.couponService = couponService;
+    this.reviewService = reviewService;
+    this.productPriceHistoryService = productPriceHistoryService;
+    this.walletService = walletService;
+    this.referalService = referalService;
+    this.offerService = offerService;
+  }
 
   DecimalFormat df = new DecimalFormat("#.00");
 
@@ -132,7 +136,7 @@ public class UserController {
     List<ProductPriceHistory> historyList = productPriceHistoryService.getPriceHistories();
     model.addAttribute("prohistory", historyList);
     model.addAttribute("product", productLis);
-    model.addAttribute("catlist", catservice.getallcategory());
+    model.addAttribute("catlist", categoryService.getallcategory());
     model.addAttribute("avgRatings", reviewService.getProductReview(productLis));
     model.addAttribute("pageTitle", "Home page");
     return "user/userhome";
@@ -146,7 +150,11 @@ public class UserController {
   }
 
   @GetMapping("/productdescription/{id}")
-  public String productdescription(@PathVariable("id") Long id, Model model, Principal principal) {
+  public String productdescription(
+    @PathVariable("id") Long id,
+    Model model,
+    Principal principal
+  ) {
 
     MyUserDetails user = userService.getUserByMail(principal.getName());
     Product product = productService.getproductbyid(id);
@@ -156,7 +164,7 @@ public class UserController {
     model.addAttribute("Catdescriptions", offer);
     ProductOffer productOffer = offerService.findByProduct(product);
     model.addAttribute("prodDescription", productOffer);
-    model.addAttribute("Categories", catservice.getallcategory());
+    model.addAttribute("Categories", categoryService.getallcategory());
     model.addAttribute("productPriceHistory", productPriceHistory);
     List<Product> productlist = productService.getallproduct();
     model.addAttribute("productlist", productlist);
@@ -170,8 +178,12 @@ public class UserController {
 
   // product order directly
   @PostMapping("/buynow")
-  public String buyNow(Principal principal, @RequestParam("productId") Long id,
-      @RequestParam(name = "quantities", defaultValue = "1") int quantity, Model m) {
+  public String buyNow(
+    Principal principal,
+    @RequestParam("productId") Long id,
+    @RequestParam(name = "quantities", defaultValue = "1") int quantity,
+    Model m
+  ) {
     Product product = productService.getproductbyid(id);
     int stock = product.getStockQuantity() - quantity;
     String email = principal.getName();
@@ -197,11 +209,16 @@ public class UserController {
   }
 
   @PostMapping("/orderproduct")
-  public String orderProduct(Model model, @RequestParam("addressId") Long addressid, Principal principal,
-      @RequestParam(value = "payment", defaultValue = "walletpayment") String payment,
-      @RequestParam("quantity") int quantity,
-      @RequestParam("totalprice") double price, @RequestParam("productId") Long productid,
-      @RequestParam(value = "useWallet", defaultValue = "") String wallet) {
+  public String orderProduct(
+    Model model,
+    @RequestParam("addressId") Long addressid,
+    Principal principal,
+    @RequestParam(value = "payment", defaultValue = "walletpayment") String payment,
+    @RequestParam("quantity") int quantity,
+    @RequestParam("totalprice") double price,
+    @RequestParam("productId") Long productid,
+    @RequestParam(value = "useWallet", defaultValue = "") String wallet
+  ) {
 
     String username = principal.getName();
     double prices = 0.0;
@@ -227,10 +244,12 @@ public class UserController {
 
   // checking out all items from cart
   @PostMapping("/orderall")
-  public String ordrall(Model model, @RequestParam("addressId") Long addressid,
-      @RequestParam(value = "payment", defaultValue = "walletpayment") String payment,
-      @RequestParam("cartprice") Double price, Principal principal,
-      @RequestParam(value = "useWallet", defaultValue = "") String wallet) {
+  public String ordrall(
+    Model model,
+    @RequestParam("addressId") Long addressid,
+    @RequestParam(value = "payment", defaultValue = "walletpayment") String payment,
+    @RequestParam("cartprice") Double price, Principal principal,
+    @RequestParam(value = "useWallet", defaultValue = "") String wallet) {
     String userName = principal.getName();
     MyUserDetails user = userService.getUserByMail(userName);
     double prices = 0.0;
@@ -281,9 +300,15 @@ public class UserController {
   }
 
   @PostMapping("/updateprofile")
-  public String updateProfile(Principal principal, @RequestParam("name") String usename,
-      @RequestParam("email") String email, @RequestParam("phonenumber") String phonenumber,
-      @RequestParam("imagefile") MultipartFile file, HttpSession session, Model model) throws IOException {
+  public String updateProfile(
+    Principal principal,
+    @RequestParam("name") String usename,
+    @RequestParam("email") String email,
+    @RequestParam("phonenumber") String phonenumber,
+    @RequestParam("imagefile") MultipartFile file,
+    HttpSession session,
+    Model model
+  ) throws IOException {
     MyUserDetails principalUser = userService.getUserByMail(principal.getName());
     principalUser.setUserName(usename);
     model.addAttribute("pageTitle", "Profile page");
@@ -304,9 +329,14 @@ public class UserController {
   }
 
   @PostMapping("/updatepassword")
-  public String updatePassword(Principal principal, @RequestParam("currentPassword") String currentPassword,
-      @RequestParam("newPassword") String newPassword, @RequestParam("confirmPassword") String confirmPassword,
-      HttpSession session, Model model) {
+  public String updatePassword(
+    Principal principal,
+    @RequestParam("currentPassword") String currentPassword,
+    @RequestParam("newPassword") String newPassword,
+    @RequestParam("confirmPassword") String confirmPassword,
+    HttpSession session,
+    Model model
+  ) {
     MyUserDetails user = userService.getUserByMail(principal.getName());
     try {
       model.addAttribute("pageTitle", "Profile page");
@@ -351,7 +381,12 @@ public class UserController {
   }
 
   @GetMapping("/cancelOrder/{id}")
-  public String deleteOrder(@PathVariable("id") int orderId, HttpSession session, Principal principal, Model model) {
+  public String deleteOrder(
+    @PathVariable("id") int orderId,
+    HttpSession session,
+    Principal principal,
+    Model model
+  ) {
     model.addAttribute("pageTitle", "Orders page");
     Order order = orderService.getOrderById(orderId);
     MyUserDetails user = userService.getUserByMail(principal.getName());
@@ -391,10 +426,14 @@ public class UserController {
 
   // modified address using edit address
   @PostMapping("/getmodaddress")
-  public String getmodifiedAddress(@ModelAttribute AddressDto addressdto, @RequestParam("country") String countryname,
-      Principal principal,@RequestParam("addressId")Long id,
-      @RequestParam(value = "defaultAddresscheck", defaultValue = "false") boolean defaultAddresscheck, Model model,
-      HttpSession session) {
+  public String getmodifiedAddress(
+    @ModelAttribute AddressDto addressdto,
+    @RequestParam("country") String countryname,
+    Principal principal,@RequestParam("addressId")Long id,
+    @RequestParam(value = "defaultAddresscheck", defaultValue = "false") boolean defaultAddresscheck,
+    Model model,
+    HttpSession session
+  ) {
     Address address = addressService.addressDtoToAddress(addressdto);
     address.setId(id);
     address.setDefaultAddress(defaultAddresscheck);
@@ -413,10 +452,14 @@ public class UserController {
 
   // creation of new address
   @PostMapping("/addresscreation")
-  public String newAddressCreated(@ModelAttribute AddressDto addressdto, @RequestParam("country") String countryname,
-      Principal principal,
-      @RequestParam(value = "defaultAddresscheck", defaultValue = "false") boolean defaultAddresscheck,
-      HttpSession session, Model model) {
+  public String newAddressCreated(
+    @ModelAttribute AddressDto addressdto,
+    @RequestParam("country") String countryname,
+    Principal principal,
+    @RequestParam(value = "defaultAddresscheck", defaultValue = "false") boolean defaultAddresscheck,
+    HttpSession session,
+    Model model
+  ) {
     model.addAttribute("pageTitle", "Address page");
     String username = principal.getName();
     Address address = addressService.addressDtoToAddress(addressdto);
@@ -481,7 +524,7 @@ public class UserController {
 
     model.addAttribute("pageTitle", "Product Page");
     List<Product> productlist = productService.getProductsBypname(name);
-    model.addAttribute("Categories", catservice.getallcategory());
+    model.addAttribute("Categories", categoryService.getallcategory());
     model.addAttribute("product", productlist);
     return "searchDisplay";
   }
@@ -491,15 +534,15 @@ public class UserController {
     Page<Product> productPage = productService.getProduct(page, 9);
     model.addAttribute("pageTitle", "Product Page");
     model.addAttribute("product", productPage);
-    model.addAttribute("Categories", catservice.getallcategory());
+    model.addAttribute("Categories", categoryService.getallcategory());
     return "productDisplay";
   }
 
   @GetMapping("/productlist/{id}")
   public String getCategoriesedProduct(@PathVariable("id") Integer id, Model model) {
-    model.addAttribute("Categories", catservice.getallcategory());
+    model.addAttribute("Categories", categoryService.getallcategory());
     model.addAttribute("pageTitle", "Product Page");
-    Category category = catservice.getcategoryByid(id);
+    Category category = categoryService.getCategoryById(id);
     List<Product> productList = category.getProduct();
     model.addAttribute("product", productList);
     return "searchDisplay";

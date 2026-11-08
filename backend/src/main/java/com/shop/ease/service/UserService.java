@@ -17,18 +17,22 @@ import com.shop.ease.model.MyUserDetails;
 @Service
 public class UserService{
 
-    @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
-    private ModelMapper modelmapper;
-
-
-    @Autowired
-    private BCryptPasswordEncoder passwordencoder;
+    private final UserRepository userRepository;
+    private final ModelMapper modelmapper;
+    private final BCryptPasswordEncoder passwordencoder;
     
   
-    public MyUserDetails creaUser(MyUserDetails user) {
+    public UserService(
+        UserRepository userRepository,
+        ModelMapper modelmapper,
+        BCryptPasswordEncoder passwordencoder
+    ) {
+        this.userRepository = userRepository;
+        this.modelmapper = modelmapper;
+        this.passwordencoder = passwordencoder;
+    }
+
+    public MyUserDetails createUser(MyUserDetails user) {
         user.setUserName(user.getUserName());
     
         user.setPassword(passwordencoder.encode(user.getPassword()));
@@ -36,22 +40,22 @@ public class UserService{
         
         user.setRole("ROLE_USER");
         user.setOtpverified(false);
-        return userRepo.save(user);
+        return userRepository.save(user);
         
     }
 
 
     public boolean checkUserMail(String email) {
-       return userRepo.existsByEmail(email);
+       return userRepository.existsByEmail(email);
     }
 
     public List<MyUserDetails> getalluser() {
-        return userRepo.findAll();
+        return userRepository.findAll();
     }
 
 
     public List<MyUserDetails> finduser(String usename) {
-       return userRepo.findByUserName(usename);
+       return userRepository.findByUserName(usename);
     }
     // @Override
     // public boolean checkUserphoneNumber(String phone_number) {
@@ -60,26 +64,26 @@ public class UserService{
 
 
     public void changelock(int id, Boolean lock) {
-         MyUserDetails user=userRepo.findById(id);
+         MyUserDetails user=userRepository.findById(id);
          if(lock){
             user.setToken(0);
-            userRepo.save(user);
+            userRepository.save(user);
          }
          else{
             user.setToken(1);
-            userRepo.save(user);
+            userRepository.save(user);
          }
          
 
     }
 
    public int getusercount() {
-      return userRepo.countuser();
+      return userRepository.countUsers();
    }
 
 
    public int getadmincount() {
-      return userRepo.countByRole("ROLE_ADMIN");
+      return userRepository.countByRole("ROLE_ADMIN");
    }
 
    public MyUserDetails convertUserDtoUserDtls(UserDto userDto){
@@ -90,12 +94,12 @@ public class UserService{
    }
 
    public MyUserDetails getUserByMail(String email){
-      return userRepo.findByEmail(email);
+      return userRepository.findByEmail(email);
    }
 
 
-public void saveUser(MyUserDetails principalUser) {
-   userRepo.save(principalUser);
-}
+   public void saveUser(MyUserDetails principalUser) {
+      userRepository.save(principalUser);
+   }
     
 }

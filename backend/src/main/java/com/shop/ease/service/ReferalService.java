@@ -2,7 +2,6 @@ package com.shop.ease.service;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.ReferalRepository;
@@ -12,9 +11,11 @@ import com.shop.ease.model.Refferal;
 @Service
 public class ReferalService {
     
+    private final ReferalRepository referalRepository;
 
-    @Autowired
-    private ReferalRepository referalRepository;
+    public ReferalService(ReferalRepository referalRepository) {
+        this.referalRepository = referalRepository;
+    }
 
     
     public void CreateReferral(MyUserDetails user) {

@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,46 +20,51 @@ import jakarta.persistence.EntityManager;
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository prorepo;
+    private final ProductRepository productRepository;
+    private final EntityManager entityManager;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public ProductService(
+        ProductRepository productRepository,
+        EntityManager entityManager,
+        ModelMapper modelMapper
+    ) {
+        this.productRepository = productRepository;
+        this.entityManager = entityManager;
+        this.modelMapper = modelMapper;
+    }
 
     public List<Product> getallproduct() {
-        return prorepo.findAll();
+        return productRepository.findAll();
     }
 
     public List<Product> getNotDeletedProducts() {
-        return prorepo.findByProductDeletedFalse();
+        return productRepository.findByProductDeletedFalse();
     }
 
     public void createproduct(Product product) {
-        prorepo.save(product);
+        productRepository.save(product);
     }
 
     public void deleteproductbyid(long id) {
 
-        prorepo.deleteById(id);
+        productRepository.deleteById(id);
     }
 
     public Product getproductbyid(long l) {
-        return prorepo.findByProductId(l);
+        return productRepository.findByProductId(l);
     }
 
     public void saveproduct(Product product) {
-        prorepo.save(product);
+        productRepository.save(product);
     }
 
     public List<Product> getProductsBypname(String pname) {
-        return prorepo.findByProductName(pname);
+        return productRepository.findByProductName(pname);
     }
 
     public int getproductcount() {
-        return prorepo.countProducts();
+        return productRepository.countProducts();
     }
 
     public Product convertProductDtoProduct(ProductDto productDto) {
@@ -74,7 +78,7 @@ public class ProductService {
         Session session = entityManager.unwrap(Session.class);
         Filter filter = session.enableFilter("deletedProductFilter");
         filter.setParameter("isDeleted", isDeleted);
-        List<Product> pro = prorepo.findAll();
+        List<Product> pro = productRepository.findAll();
         session.disableFilter("deletedProductFilter");
         return pro;
 
@@ -84,13 +88,13 @@ public class ProductService {
         List<Product> pro = this.getdeletedProduct();
         for (Product prod : pro) {
             prod.setProductDeleted(false);
-            prorepo.save(prod);
+            productRepository.save(prod);
         }
     }
 
     public Page<Product> getProduct(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return prorepo.findAll(pageable);
+        return productRepository.findAll(pageable);
     }
 
 }

@@ -16,9 +16,12 @@ import com.shop.ease.model.Review;
 @Service
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
+   public ReviewService(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
+   
     public void saveReview(Review review) {
         reviewRepository.save(review);
     }

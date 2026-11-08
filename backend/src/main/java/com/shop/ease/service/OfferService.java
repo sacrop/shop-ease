@@ -21,17 +21,22 @@ import jakarta.transaction.Transactional;
 @Service
 public class OfferService {
 
-    @Autowired
-    private OfferRepository offerRepository;
+    private final OfferRepository offerRepository;
+    private final ProductPriceHistoryRepository priceHistoryRepository;
+    private final ProductRepository productRepository;
+    private final ProductOfferRepository productOfferRepository;
 
-    @Autowired
-    private ProductPriceHistoryRepository priceHistoryRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ProductOfferRepository productOfferRepository;
+    public OfferService(
+        OfferRepository offerRepository,
+        ProductPriceHistoryRepository priceHistoryRepository,
+        ProductRepository productRepository,
+        ProductOfferRepository productOfferRepository
+    ) {
+        this.offerRepository = offerRepository;
+        this.priceHistoryRepository = priceHistoryRepository;
+        this.productRepository = productRepository;
+        this.productOfferRepository = productOfferRepository;
+    }
 
     @Transactional
     public void createCategoryOffer(double discount, Category category, String description) {

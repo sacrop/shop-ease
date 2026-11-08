@@ -3,9 +3,12 @@ package com.shop.ease.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.shop.ease.model.Order;
 import com.shop.ease.model.OrderItem;
 
+@Service
 public class SalesService {
     
     private final OrderService orderService;

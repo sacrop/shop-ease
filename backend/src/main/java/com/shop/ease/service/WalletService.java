@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.ease.Repository.WalletHistoryRepository;
@@ -16,11 +15,17 @@ import com.shop.ease.model.WalletHistory;
 
 @Service
 public class WalletService {
-    @Autowired
-    private WalletRepository walletRepository;
+    
+    private final WalletRepository walletRepository;
+    private final WalletHistoryRepository walletHistoryRepository;
 
-    @Autowired
-    private WalletHistoryRepository walletHistoryRepository;
+    public WalletService(
+        WalletRepository walletRepository,
+        WalletHistoryRepository walletHistoryRepository
+    ) {
+        this.walletRepository = walletRepository;
+        this.walletHistoryRepository = walletHistoryRepository;
+    }
 
     DecimalFormat df = new DecimalFormat("#.00");
 

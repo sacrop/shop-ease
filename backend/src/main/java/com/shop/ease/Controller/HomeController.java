@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.shop.ease.Repository.UserRepository;
 import com.shop.ease.dto.UserDto;
 import com.shop.ease.helper.Message;
 import com.shop.ease.helper.MycustomException;
@@ -40,42 +38,42 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
-    @Autowired
-    private UserService service;
 
     Random randotp = new Random();
 
     String savedotp;
-
-    @Autowired
+    
     private TwilioOtpservice twilioOtpservice;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private PasswordEncoder encoder;
-
-    @Autowired
     private ProductService productService;
-
-    @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
     private ReferalService referalService;
-
-    @Autowired
     private WalletService walletService;
-
-    @Autowired
-    private CategoryService catservice;
-
-    @Autowired
+    private CategoryService categoryService;
     private ProductPriceHistoryService productPriceHistoryService;
-
-    @Autowired
     private ReviewService reviewService;
+
+    public HomeController(
+        TwilioOtpservice twilioOtpservice,
+        UserService userService,
+        PasswordEncoder encoder,
+        ProductService productService,
+        ReferalService referalService,
+        WalletService walletService,
+        CategoryService categoryService,
+        ProductPriceHistoryService productPriceHistoryService,
+        ReviewService reviewService
+    ) {
+        this.twilioOtpservice = twilioOtpservice;
+        this.userService = userService;
+        this.encoder = encoder;
+        this.productService = productService;
+        this.referalService = referalService;
+        this.walletService = walletService;
+        this.categoryService = categoryService;
+        this.productPriceHistoryService = productPriceHistoryService;
+        this.reviewService = reviewService;
+    }
 
     @GetMapping("/")
     public String index(Model model) {
@@ -84,7 +82,7 @@ public class HomeController {
         List<Product> productLis = productService.getallproduct();
         model.addAttribute("prohistory", historyList);
         model.addAttribute("product", productLis);
-        model.addAttribute("catlist", catservice.getallcategory());
+        model.addAttribute("catlist", categoryService.getallcategory());
         model.addAttribute("avgRatings", reviewService.getProductReview(productLis));
         return "index";
     }
@@ -106,9 +104,14 @@ public class HomeController {
     }
 
     @PostMapping("/SuccessResetPasswd")
-    public String successReset(Principal principal, @RequestParam("currentPassword") String currentPassword,
-            @RequestParam("newPassword") String newPassword, @RequestParam("confirmPassword") String confirmPassword,
-            HttpSession session, Model model, @RequestParam("email") String email) {
+    public String successReset(
+        Principal principal,
+        @RequestParam("currentPassword") String currentPassword,
+        @RequestParam("newPassword") String newPassword,
+        @RequestParam("confirmPassword") String confirmPassword,
+        HttpSession session,
+        Model model,
+        @RequestParam("email") String email) {
         MyUserDetails user = userService.getUserByMail(email);
         try {
             model.addAttribute("pageTitle", "Profile page");
@@ -155,7 +158,7 @@ public class HomeController {
             @RequestParam(value = "agreement", defaultValue = "false") boolean agreement, HttpSession session,
             @RequestParam("confirmpassword") String password, @RequestParam("referralcode") String referalcode) {
 
-        Boolean check = service.checkUserMail(user.getEmail());
+        Boolean check = userService.checkUserMail(user.getEmail());
         try {
             if (!password.equals(user.getPassword())) {
                 throw new Exception("password doesn't match");
@@ -174,7 +177,7 @@ public class HomeController {
                         throw new Exception("referal code is invalid");
                 }
 
-                MyUserDetails userdtls = service.creaUser(service.convertUserDtoUserDtls(user));
+                MyUserDetails userdtls = userService.createUser(userService.convertUserDtoUserDtls(user));
                 if (userdtls != null && agreement) {
                     session.setAttribute("email", user.getEmail());
                     session.setAttribute("phoneNumber", user.getPhoneNumber());
@@ -237,7 +240,7 @@ public class HomeController {
         Product product = productService.getproductbyid((long) id);
         model.addAttribute("products", product);
         model.addAttribute("pageTitle", "product page");
-        model.addAttribute("Categories", catservice.getallcategory());
+        model.addAttribute("Categories", categoryService.getallcategory());
         List<Product> productlist = productService.getallproduct();
         model.addAttribute("productlist", productlist);
 
@@ -250,7 +253,7 @@ public class HomeController {
         model.addAttribute("pageTitle", "Products");
         model.addAttribute("pageTitle", "Product Page");
         List<Product> productlist = productService.getProductsBypname(name);
-        model.addAttribute("Categories", catservice.getallcategory());
+        model.addAttribute("Categories", categoryService.getallcategory());
         model.addAttribute("product", productlist);
         return "searchDisplay";
     }
@@ -261,14 +264,14 @@ public class HomeController {
         model.addAttribute("pageTitle", "Products");
         model.addAttribute("pageTitle", "Product Page");
         model.addAttribute("product", productPage);
-        model.addAttribute("Categories", catservice.getallcategory());
+        model.addAttribute("Categories", categoryService.getallcategory());
         return "productDisplay";
     }
 
     @GetMapping("/productlist/{id}")
     public String getCategoriesedProduct(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("Categories", catservice.getallcategory());
-        Category category = catservice.getcategoryByid(id);
+        model.addAttribute("Categories", categoryService.getallcategory());
+        Category category = categoryService.getCategoryById(id);
         List<Product> productList = category.getProduct();
         model.addAttribute("pageTitle", "Products");
         model.addAttribute("product", productList);

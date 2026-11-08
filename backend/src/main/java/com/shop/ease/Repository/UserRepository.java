@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<MyUserDetails,Integer> {
     public MyUserDetails findByPhonenumber(String phonenumber);
 
     @Query("SELECT COUNT(*) FROM MyUserDetails")
-    public int countuser();
+    public int countUsers();
 
     public int countByRole(String role);
      

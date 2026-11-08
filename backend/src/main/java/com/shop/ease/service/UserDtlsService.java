@@ -1,6 +1,5 @@
 package com.shop.ease.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,12 +13,20 @@ import com.shop.ease.model.MyUserDetails;
 @Service
 public class UserDtlsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userrepo;
+    private final UserRepository userRepository;
+
+    public UserDtlsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public UserDtlsService() {
+        this.userRepository = null;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // TODO Auto-generated method stub
-        MyUserDetails user=userrepo.findByEmail(email);
+        MyUserDetails user=userRepository.findByEmail(email);
 
         if(user!=null){
             return new CustomUserDetails(user);

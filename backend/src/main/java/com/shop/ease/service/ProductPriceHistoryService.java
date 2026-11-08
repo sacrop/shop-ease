@@ -12,11 +12,12 @@ import com.shop.ease.model.ProductPriceHistory;
 @Service
 public class ProductPriceHistoryService {
     
-    @Autowired
-    private ProductPriceHistoryRepository priceHistoryRepository;
 
-    // @Autowired 
-    // priv
+    private final ProductPriceHistoryRepository priceHistoryRepository;
+
+    public ProductPriceHistoryService(ProductPriceHistoryRepository priceHistoryRepository) {
+        this.priceHistoryRepository = priceHistoryRepository;
+    }
 
     public ProductPriceHistory  getOriginalPriceOfProduct(Product product ){
         return priceHistoryRepository.findByProduct(product);

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,31 +61,14 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private UserRepository userrepo;
-
-    @Autowired
-    private CategoryService catservice;
-
-    @Autowired
-    private ProductService proserv;
-
-    @Autowired
+    private UserRepository userRepository;
+    private CategoryService categoryService;
+    private ProductService productService;
     private PasswordEncoder encoder;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private OrderService orderService;
-
-    @Autowired
     private CouponService couponService;
-
-    @Autowired
     private OfferService offerService;
-
-    @Autowired
     private ProductPriceHistoryService productPriceHistoryService;
 
     DecimalFormat df = new DecimalFormat("#.##");
@@ -94,7 +76,7 @@ public class AdminController {
     @ModelAttribute
     public void UserDetails(Model m, Principal p) {
         String email = p.getName();
-        MyUserDetails user = userrepo.findByEmail(email);
+        MyUserDetails user = userRepository.findByEmail(email);
         m.addAttribute("user", user);
 
     }
@@ -103,7 +85,7 @@ public class AdminController {
     public String home(Model model) {
         // admin dashboard
         int count = userService.getusercount() - userService.getadmincount();
-        model.addAttribute("procount", proserv.getproductcount());
+        model.addAttribute("procount", productService.getproductcount());
         model.addAttribute("usercount", count);
         model.addAttribute("totalSale", orderService.getTotalSale());
         model.addAttribute("pageTitle", "Admin home");
@@ -202,7 +184,7 @@ public class AdminController {
             if (categoryDto.getCategoryName().isEmpty()) {
                 throw new MycustomException("Category field cannot be empty");
             } else {
-                Boolean check = catservice.existsBycategoryName(categoryDto.getCategoryName());
+                Boolean check = categoryService.existsByCategoryName(categoryDto.getCategoryName());
                 if (check) {
                     session.setAttribute("message", new Message("category already exist", "alert-danger"));
                 } else {
@@ -213,10 +195,10 @@ public class AdminController {
                     }
                     Path path = Paths.get(filestore.getAbsolutePath() + File.separator + imagepath);
                     Files.copy(files.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                    Category category = catservice.convertCategoryDtotCategory(categoryDto);
+                    Category category = categoryService.convertCategoryDtoToCategory(categoryDto);
                     category.setImagePath(imagepath);
                     category.setIconClass(icon);
-                    catservice.createcat(category);
+                    categoryService.createcat(category);
                     session.setAttribute("message", new Message("category created successfully", "alert-success"));
                 }
             }
@@ -233,7 +215,7 @@ public class AdminController {
     public String addSubcategory(Model model) {
         model.addAttribute("pageTitle", "Category page");
         List<String> list = new ArrayList<>();
-        list.addAll(catservice.getAllCategoryNames());
+        list.addAll(categoryService.getAllCategoryNames());
         model.addAttribute("categories", list);
         return "admin/add_subcategory";
     }
@@ -241,8 +223,8 @@ public class AdminController {
     @PostMapping("/createsubcat")
     public String createSubcategory(@ModelAttribute Subcategory subcategory, @RequestParam("paracat") String categoryName,
             HttpSession session, Model model) {
-        // Boolean check = catservice.existsBySubcatname(subcat.getSubcatname());
-        Boolean verify = catservice.existBycategoryNameAndSubcategoryName(subcategory.getSubcategoryName(), categoryName);
+        // Boolean check = categoryService.existsBySubcatname(subcategory.getSubcatname());
+        Boolean verify = categoryService.existBycategoryNameAndSubcategoryName(subcategory.getSubcategoryName(), categoryName);
         model.addAttribute("pageTitle", "Subcategory page");
         try {
             if (categoryName.isEmpty()) {
@@ -254,8 +236,8 @@ public class AdminController {
             if (verify) {
                 throw new MycustomException("Subcategory already exist");
             } else {
-                subcategory.setCategory(catservice.getCategorybyname(categoryName));
-                catservice.createsubcat(subcategory);
+                subcategory.setCategory(categoryService.getCategoryByName(categoryName));
+                categoryService.createsubcat(subcategory);
                 session.setAttribute("message", new Message("Subcategory created successfully", "alert-success"));
             }
         } catch (MycustomException e) {
@@ -266,7 +248,7 @@ public class AdminController {
 
     @GetMapping("/editcategory")
     public String editCategory(Model model) {
-        model.addAttribute("categories", catservice.getNotdeletedCategories());
+        model.addAttribute("categories", categoryService.getNotdeletedCategories());
         model.addAttribute("pageTitle", "Subcategory page");
 
         return "admin/editcategory";
@@ -275,13 +257,13 @@ public class AdminController {
     @PostMapping("/deleteCategory")
     public String deleteCategory(@RequestParam("catid") int id, Model model) {
         model.addAttribute("pageTitle", "Subcategory page");
-        catservice.deleteCategoryByid(id);
+        categoryService.deleteCategoryByid(id);
         return "redirect:/admin/editcategory";
     }
 
     @GetMapping("/restoredeleted")
     public String restoreDeleted(Model model) {
-        List<Category> cate = catservice.getdeletedCategories(true);
+        List<Category> cate = categoryService.getdeletedCategories(true);
         if (cate != null) {
             for (Category cat : cate) {
                 model.addAttribute("pageTitle", "restore page");
@@ -289,7 +271,7 @@ public class AdminController {
                 for (Subcategory subcat : cat.getSubcategory()) {
                     subcat.setDeleted(false);
                 }
-                catservice.save(cat);
+                categoryService.save(cat);
             }
         }
         return "redirect:/admin/editcategory";
@@ -297,7 +279,7 @@ public class AdminController {
 
     @GetMapping("/updateCategory")
     public String updateCategory(Model model, @RequestParam("catid") int categoryId) {
-        Category category = catservice.getcategoryByid(categoryId);
+        Category category = categoryService.getCategoryById(categoryId);
         model.addAttribute("category", category);
         model.addAttribute("pageTitle", "category page");
         return "admin/updateCategory";
@@ -309,9 +291,9 @@ public class AdminController {
             @RequestParam("imagefile") MultipartFile files,
             HttpSession session) throws IOException {
         try {
-            Category category = catservice.getcategoryByid(catid);
+            Category category = categoryService.getCategoryById(catid);
             if (!catname.equals(category.getCategoryName())) {
-                boolean existcatname = catservice.existsBycategoryName(catname);
+                boolean existcatname = categoryService.existsByCategoryName(catname);
                 if (existcatname) {
                     throw new MycustomException("category name already exist");
                 }
@@ -329,7 +311,7 @@ public class AdminController {
             category.setImagePath(imagepath);
             category.setIconClass(icon);
             category.setCategoryName(catname);
-            catservice.save(category);
+            categoryService.save(category);
             session.setAttribute("message", new Message("category name updated successfully", "alert-success"));
             return "redirect:/admin/editcategory";
         } catch (Exception e) {
@@ -340,7 +322,7 @@ public class AdminController {
 
     @GetMapping("/addproduct")
     public String addProduct(Model m) {
-        List<Category> catList = catservice.getallcategory();
+        List<Category> catList = categoryService.getallcategory();
         m.addAttribute("category", catList);
         m.addAttribute("pageTitle", "Product page");
         return "admin/addproduct";
@@ -349,7 +331,7 @@ public class AdminController {
     @GetMapping("/getsubcategories/{id}")
     public ResponseEntity<List<Map<String, Object>>> getSubCategories(@PathVariable("id") int id) {
         // this is the api to sent the subcategory list based on category id
-        List<Map<String, Object>> subcatlist = catservice.getSubcategoryNamesIdsByCategoryId(id);
+        List<Map<String, Object>> subcatlist = categoryService.getSubcategoryNamesIdsByCategoryId(id);
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(subcatlist);
     }
@@ -385,8 +367,8 @@ public class AdminController {
                 product.setProductPrice(price);
                 product.setProductPrice(product.formattedPrice());
                 // Product product = proserv.convertProductDtoProduct(products);
-                product.setCategory(catservice.getcategoryByid(catid));
-                product.setSubcategory(catservice.getSubcategoryById(subcatid));
+                product.setCategory(categoryService.getCategoryById(catid));
+                product.setSubcategory(categoryService.getSubcategoryById(subcatid));
                 List<String> imagepaths = new ArrayList<>();
                 for (MultipartFile file : files) {
                     if (file.isEmpty()) {
@@ -403,7 +385,7 @@ public class AdminController {
                     Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
                 }
                 product.setImagepath(imagepaths);
-                proserv.createproduct(product);
+                productService.createproduct(product);
                 session.setAttribute("message", new Message("product added successfully", "alert-success"));
             }
         } catch (MycustomException e) {
@@ -415,31 +397,31 @@ public class AdminController {
     @GetMapping("/editproduct")
     public String editProduct(Model model) {
         model.addAttribute("pageTitle", "Product page");
-        model.addAttribute("product", proserv.getNotDeletedProducts());
+        model.addAttribute("product", productService.getNotDeletedProducts());
         return "admin/editproduct";
     }
 
     @GetMapping("/restoredeletedproducts")
     public String restoreDeletedProducts(Model model) {
-        proserv.restoredeleted();
+        productService.restoredeleted();
         model.addAttribute("pageTitle", "Product page");
         return "redirect:/admin/editproduct";
     }
 
     @GetMapping("/deleteproduct")
     public String deleteProduct(@RequestParam("productId") long id, Model model) {
-        proserv.deleteproductbyid(id);
+        productService.deleteproductbyid(id);
         model.addAttribute("pageTitle", "Product page");
         return "redirect:/admin/editproduct";
     }
 
     @GetMapping("/updatedproduct")
     public String updateProduct(@RequestParam("productId") int id, Model model) {
-        Product product = proserv.getproductbyid(id);
-        List<Category> catList = catservice.getallcategory();
+        Product product = productService.getproductbyid(id);
+        List<Category> catList = categoryService.getallcategory();
         model.addAttribute("category", catList);
         model.addAttribute("pageTitle", "Product page");
-        model.addAttribute("subcategorys", catservice.getallsubcategory());
+        model.addAttribute("subcategorys", categoryService.getallsubcategory());
         model.addAttribute("products", product);
         return "admin/updateproducts";
     }
@@ -451,19 +433,19 @@ public class AdminController {
             HttpSession session, @RequestParam("productId") long id) {
 
         try {
-            Product product = proserv.getproductbyid(id);
+            Product product = productService.getproductbyid(id);
             product.setProductName(products.getProductName());
             product.setProductDescription(products.getProductDescription());
             product.setProductSpecification(products.getProductSpecification());
             product.setProductPrice(products.getProductPrice());
-            if (catservice.getcategoryByid(catid) == null) {
+            if (categoryService.getCategoryById(catid) == null) {
                 throw new Exception("category should be selected");
             }
-            product.setCategory(catservice.getcategoryByid(catid));
-            if (catservice.getSubcategoryById(subcatid) == null) {
+            product.setCategory(categoryService.getCategoryById(catid));
+            if (categoryService.getSubcategoryById(subcatid) == null) {
                 throw new Exception("subcategory should be selected");
             }
-            product.setSubcategory(catservice.getSubcategoryById(subcatid));
+            product.setSubcategory(categoryService.getSubcategoryById(subcatid));
 
             List<String> imagepaths = new ArrayList<>();
 
@@ -489,7 +471,7 @@ public class AdminController {
             } else {
                 product.setImagepath(product.getImagepath());
             }
-            proserv.createproduct(product);
+            productService.createproduct(product);
             productPriceHistoryService.updatePriceHistory(product);
             session.setAttribute("message", new Message("product added successfully", "alert-success"));
 
@@ -559,7 +541,7 @@ public class AdminController {
 
     @GetMapping("/stockmanagement")
     private String getstockManagement(Model model) {
-        model.addAttribute("product", proserv.getallproduct());
+        model.addAttribute("product", productService.getallproduct());
         model.addAttribute("pageTitle", "Stock page");
         return "admin/Stockmanagement";
 
@@ -571,10 +553,10 @@ public class AdminController {
             HttpSession session) {
         model.addAttribute("pageTitle", "Stock page");
         if (qty != null) {
-            Product product = proserv.getproductbyid(id);
+            Product product = productService.getproductbyid(id);
             int count = product.getStockQuantity() + qty;
             product.setStockQuantity(count);
-            proserv.saveproduct(product);
+            productService.saveproduct(product);
             session.setAttribute("message", new Message("STOCK ADDED SUCCESSFULLY", "alert-success"));
         } else {
             session.setAttribute("message", new Message("no input given", "alert-danger"));
@@ -588,9 +570,9 @@ public class AdminController {
             HttpSession session) {
         if (qty != null) {
 
-            Product product = proserv.getproductbyid(id);
+            Product product = productService.getproductbyid(id);
             product.setStockQuantity(qty);
-            proserv.saveproduct(product);
+            productService.saveproduct(product);
             session.setAttribute("message", new Message("STOCK SET SUCCESSFULLY", "alert-success"));
         } else {
             session.setAttribute("message", new Message("no input given", "alert-danger"));
@@ -669,8 +651,8 @@ public class AdminController {
     @GetMapping("/addOffer")
     private String addOffer(Model model) {
         model.addAttribute("pageTitle", "Offer page");
-        model.addAttribute("categories", catservice.getallcategory());
-        model.addAttribute("products", proserv.getallproduct());
+        model.addAttribute("categories", categoryService.getallcategory());
+        model.addAttribute("products", productService.getallproduct());
         return "admin/addOffer";
     }
 
@@ -678,7 +660,7 @@ public class AdminController {
     public String createOffer(@RequestParam("paracat") String catname, @RequestParam("discount") double discount,
             @RequestParam("offerdescription") String description,
             HttpSession session) {
-        Category category = catservice.getCategorybyname(catname);
+        Category category = categoryService.getCategoryByName(catname);
         Boolean check = offerService.findExistOffer(category);
         if (check) {
             session.setAttribute("message", new Message("offer already set for category", "alert-danger"));
@@ -729,7 +711,7 @@ public class AdminController {
             @RequestParam("productname") Long productId, @RequestParam("offerdescription") String description,
             HttpSession session) {
         try {
-            Product product = proserv.getproductbyid(productId);
+            Product product = productService.getproductbyid(productId);
             offerService.createProductOffer(product, discount, description);
             session.setAttribute("message", new Message("offer set successfully", "alert-success"));
             return "/admin/addOffer";
@@ -743,7 +725,7 @@ public class AdminController {
     // update product offer form
     @GetMapping("/getupdateProduct")
     public String getUpdatingProfile(@RequestParam("productId") Long id, Model model) {
-        Product product = proserv.getproductbyid(id);
+        Product product = productService.getproductbyid(id);
         model.addAttribute("offers", offerService.findByProduct(product));
         return "admin/updateProductOffer";
     }
@@ -752,7 +734,7 @@ public class AdminController {
     public String updateProductOffer(@RequestParam("discount") double discount,
             @RequestParam("productId") Long productId, @RequestParam("offerdescription") String description,
             HttpSession session) {
-        Product product = proserv.getproductbyid(productId);
+        Product product = productService.getproductbyid(productId);
         offerService.updateProductOffer(discount, description, product);
         session.setAttribute("message", new Message("offer updated successfully", "alert-success"));
         return "redirect:/admin/showOffer";

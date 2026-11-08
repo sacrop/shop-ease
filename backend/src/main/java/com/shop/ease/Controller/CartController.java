@@ -24,14 +24,19 @@ import com.shop.ease.service.UserService;
 @RequestMapping("/user")
 public class CartController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final ProductService productService;
+    private final ShoppingCartService shoppingCartService;
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ShoppingCartService shoppingCartService;
+    public CartController(
+        UserService userService,
+        ProductService productService,
+        ShoppingCartService shoppingCartService
+    ) {
+        this.userService = userService;
+        this.productService = productService;
+        this.shoppingCartService = shoppingCartService;
+    }
 
     DecimalFormat df = new DecimalFormat("#.00");
 
