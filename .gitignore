@@ -1,0 +1,38 @@
+# ---------- Secrets ----------
+.env
+*.env
+!.env.example
+
+# ---------- Java / Maven ----------
+backend/target/
+target/
+*.class
+*.jar
+*.war
+!backend/.mvn/wrapper/maven-wrapper.jar
+HELP.md
+
+# ---------- Logs & generated files ----------
+*.log
+log.txt
+logs/
+log.txt.*
+*.gz
+backend/sales_report.csv
+
+# ---------- IDEs ----------
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---------- Node / React ----------
+node_modules/
+frontend/shop-ease/build/
+frontend/shop-ease/dist/
+frontend/shop-ease/coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
